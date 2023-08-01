@@ -4,6 +4,16 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <Authors>lk-code</Authors>
+        <Copyright>MIT</Copyright>
+        <PackageProjectUrl>https://github.com/lk-code/fluent-data-builder</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/lk-code/fluent-data-builder</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <Description>fluent data builder for json and xml</Description>
+        <PackageIcon>icon_128.png</PackageIcon>
+        <Title>FluentDataBuilder.NewtonsoftJson</Title>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,6 +22,17 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\icon_128.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\..\README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
     </ItemGroup>
 
 </Project>
