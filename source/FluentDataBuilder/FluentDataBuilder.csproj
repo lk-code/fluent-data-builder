@@ -6,4 +6,8 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\FluentDataBuilder.Core\FluentDataBuilder.Core.csproj" />
+    </ItemGroup>
+
 </Project>
