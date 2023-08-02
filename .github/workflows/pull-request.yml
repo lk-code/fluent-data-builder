@@ -26,5 +26,5 @@ jobs:
     - name: Build and analyze
       shell: pwsh
       run: |
-        dotnet build --configuration Release --no-restore
-        dotnet test
+        dotnet build --configuration Release --no-restore source/
+        dotnet test source/
