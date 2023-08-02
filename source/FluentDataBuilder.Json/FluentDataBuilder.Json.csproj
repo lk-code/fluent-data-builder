@@ -4,21 +4,23 @@
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        
+        <Title>FluentDataBuilder.Json</Title>
+        <PackageOutputPath>./nupkg</PackageOutputPath>
+        <Company>$(Authors)</Company>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <Authors>lk-code</Authors>
+        <Description>fluent data builder for json and xml</Description>
         <Copyright>MIT</Copyright>
         <PackageProjectUrl>https://github.com/lk-code/fluent-data-builder</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/lk-code/fluent-data-builder</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-        <Description>fluent data builder for json and xml</Description>
         <PackageIcon>icon_128.png</PackageIcon>
-        <Title>FluentDataBuilder.Json</Title>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/lk-code/html-compiler-tool</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+        <VersionPrefix>1.0.0</VersionPrefix>
     </PropertyGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\FluentDataBuilder\FluentDataBuilder.csproj" />
-    </ItemGroup>
 
     <ItemGroup>
         <None Include="..\..\icon_128.png">
