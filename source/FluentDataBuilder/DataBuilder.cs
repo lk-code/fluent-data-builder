@@ -26,6 +26,14 @@ public class DataBuilder : IDataBuilder
     }
 
     /// <inheritdoc />
+    public IDataBuilder Add(string name, IEnumerable<object> values)
+    {
+        this._data.Add(name, values.ToArray());
+
+        return this;
+    }
+
+    /// <inheritdoc />
     public Dictionary<string, object> GetProperties()
     {
         return this._data;

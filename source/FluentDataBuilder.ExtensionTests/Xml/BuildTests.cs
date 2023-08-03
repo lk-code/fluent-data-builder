@@ -1,6 +1,4 @@
-using FluentDataBuilder.Xml;
-
-namespace FluentDataBuilder.Tests.Xml;
+namespace FluentDataBuilder.ExtensionTests.Xml;
 
 [TestClass]
 public class BuildTests

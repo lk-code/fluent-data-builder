@@ -3,7 +3,7 @@ using FluentDataBuilder.NewtonsoftJson;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FluentDataBuilder.Tests.NewtonsoftJson;
+namespace FluentDataBuilder.ExtensionTests.NewtonsoftJson;
 
 [TestClass]
 public class BuildTests
