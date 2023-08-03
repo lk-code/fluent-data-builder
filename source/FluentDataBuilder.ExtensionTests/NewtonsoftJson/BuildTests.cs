@@ -1,3 +1,4 @@
+using System.Text.Json;
 using FluentAssertions;
 using FluentDataBuilder.NewtonsoftJson;
 using Newtonsoft.Json;
@@ -65,5 +66,85 @@ public class BuildTests
         
         result.Should().NotBeNullOrEmpty();
         result.Should().Be("{\"name\":\"this is a test\",\"number\":123}");
+    }
+
+    [TestMethod]
+    public void Build_WithStringList_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
+
+        builder.Add("name", "this is a test");
+        builder.Add("array", new List<string> { "this", "is", "a", "test" });
+
+        JObject jsonResult = builder.Build();
+
+        string result = jsonResult.ToString(Formatting.None);
+
+        result.Should().NotBeNullOrEmpty();
+        result.Should().Be("{\"name\":\"this is a test\",\"array\":[\"this\",\"is\",\"a\",\"test\"]}");
+    }
+
+    [TestMethod]
+    public void Build_WithStringArray_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
+
+        builder.Add("name", "this is a test");
+        builder.Add("array", new List<string> { "this", "is", "a", "test" }.ToArray());
+
+        JObject jsonResult = builder.Build();
+
+        string result = jsonResult.ToString(Formatting.None);
+
+        result.Should().NotBeNullOrEmpty();
+        result.Should().Be("{\"name\":\"this is a test\",\"array\":[\"this\",\"is\",\"a\",\"test\"]}");
+    }
+
+    [TestMethod]
+    public void Build_WithMixedArray_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
+
+        builder.Add("name", "this is a test");
+        builder.Add("array", new List<object> { "this", 123, true, 456.78 }.ToArray());
+
+        JObject jsonResult = builder.Build();
+
+        string result = jsonResult.ToString(Formatting.None);
+
+        result.Should().NotBeNullOrEmpty();
+        result.Should().Be("{\"name\":\"this is a test\",\"array\":[\"this\",123,true,456.78]}");
+    }
+
+    [TestMethod]
+    public void Build_WithNumericIntArray_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
+
+        builder.Add("name", "this is a test");
+        builder.Add("array", new List<int> { 12, 34, 56, 78 }.ToArray());
+
+        JObject jsonResult = builder.Build();
+
+        string result = jsonResult.ToString(Formatting.None);
+
+        result.Should().NotBeNullOrEmpty();
+        result.Should().Be("{\"name\":\"this is a test\",\"array\":[12,34,56,78]}");
+    }
+
+    [TestMethod]
+    public void Build_WithNumericDoubleArray_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
+
+        builder.Add("name", "this is a test");
+        builder.Add("array", new List<double> { 12.34, 34, 56.78, 78.901 }.ToArray());
+
+        JObject jsonResult = builder.Build();
+
+        string result = jsonResult.ToString(Formatting.None);
+
+        result.Should().NotBeNullOrEmpty();
+        result.Should().Be("{\"name\":\"this is a test\",\"array\":[12.34,34.0,56.78,78.901]}");
     }
 }
