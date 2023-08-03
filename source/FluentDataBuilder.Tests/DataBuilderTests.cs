@@ -1,6 +1,6 @@
 using FluentAssertions;
 
-namespace FluentDataBuilder.ExtensionTests;
+namespace FluentDataBuilder.Tests;
 
 [TestClass]
 public class DataBuilderTests
@@ -17,9 +17,23 @@ public class DataBuilderTests
             .Add("typevalue", "a object")
             .Add("numbervalue", 55865)
             .Add("booleanvalue", true));
-        
+
         var properties = builder.GetProperties();
+
+        properties.Should().NotBeNull();
+    }
+
+    [TestMethod]
+    public void Build_WithStringArray_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
         
+        builder.Add("name", "this is a test");
+        builder.Add("array", new List<string> {"this", "is", "a", "test"}.ToArray());
+        builder.Add("list", new List<string> {"this", "is", "a", "test"});
+
+        var properties = builder.GetProperties();
+
         properties.Should().NotBeNull();
     }
 }
