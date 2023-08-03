@@ -1,4 +1,4 @@
-# fluent-data-builder
+# FluentDataBuilder
 
 ![html-compiler-tool](https://raw.githubusercontent.com/lk-code/fluent-data-builder/main/icon_128.png)
 
@@ -15,6 +15,95 @@
 
 A fluent data builder for json and xml
 
-## System.Text.Json - FluentDataBuilder.Json
-## Newtonsoft.Json - FluentDataBuilder.NewtonsoftJson
-## (coming soon) - FluentDataBuilder.Xml
+## DataBuilder Output Libraries
+
+FluentDataBuilder has some NuGet-Libraries to generate output:
+
+### System.Text.Json - FluentDataBuilder.Json
+
+install the nuget `FluentDataBuilder.Json` and follow the general DataBuilder steps. the following code is a sample for the initialization with System.Text.Json.
+
+`IDataBuilder builder = new DataBuilder();`<br />
+`...`<br />
+`JsonDocument jsonResult = builder.Build();`<br />
+
+### Newtonsoft.Json - FluentDataBuilder.NewtonsoftJson
+
+install the nuget `FluentDataBuilder.NewtonsoftJson` and follow the general DataBuilder steps. the following code is a sample for the initialization with Newtonsoft.Json.
+
+`IDataBuilder builder = new DataBuilder();`<br />
+`...`<br />
+`JObject jsonResult = builder.Build();`<br />
+
+### (coming soon) - FluentDataBuilder.Xml
+
+## How to create Data Objects
+
+First you need to create an instance:
+`IDataBuilder builder = new DataBuilder();`<br />
+
+Use the Add-Method to add data:
+
+### add simple properties
+
+`builder.Add("StringProperty", "a value");`<br />
+`builder.Add("NumericProperty", 12345);`<br />
+`builder.Add("BooleanProperty", true);`<br />
+
+**result (in json):**
+
+`{`<br />
+`    "StringProperty": "a value",`<br />
+`    "NumericProperty": 12345,`<br />
+`    "BooleanProperty": true`<br />
+`}`<br />
+
+### add arrays
+
+`builder.Add("ListProperty", new List<string> { "this", "is", "a", "test" });`<br />
+`builder.Add("ArrayProperty", new string[] { "this", "is", "a", "test" });`<br />
+`builder.Add("MixedListProperty", new List<object> { "value", 123, true, 456.78 });`<br />
+
+**result (in json):**
+
+`{`<br />
+`    "ListProperty":`<br />
+`    [`<br />
+`        "this",`<br />
+`        "is",`<br />
+`        "a",`<br />
+`        "test"`<br />
+`    ],`<br />
+`    "ArrayProperty":`<br />
+`    [`<br />
+`        "this",`<br />
+`        "is",`<br />
+`        "a",`<br />
+`        "test"`<br />
+`    ],`<br />
+`    "MixedListProperty":`<br />
+`    [`<br />
+`        "value",`<br />
+`        123,`<br />
+`        true,`<br />
+`        456.78`<br />
+`    ]`<br />
+`}`<br />
+
+### add new object
+
+`builder.Add("ObjectProperty", new DataBuilder()`<br />
+`    .Add("StringProperty", "another value")`<br />
+`    .Add("NumericProperty", 67890)`<br />
+`    .Add("BooleanProperty", false));`<br />
+
+**result (in json):**
+
+`{`<br />
+`    "ObjectProperty":`<br />
+`    {`<br />
+`        "StringProperty": "another value",`<br />
+`        "NumericProperty": 67890,`<br />
+`        "BooleanProperty": false`<br />
+`    }`<br />
+`}`<br />
