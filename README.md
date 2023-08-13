@@ -35,7 +35,11 @@ install the nuget `FluentDataBuilder.NewtonsoftJson` and follow the general Data
 `...`<br />
 `JObject jsonResult = builder.Build();`<br />
 
-### (coming soon) - FluentDataBuilder.Xml
+### System.Xml - FluentDataBuilder.Xml
+
+`IDataBuilder builder = new DataBuilder();`<br />
+`...`<br />
+`XmlDocument xmlDocument = builder.Build();`<br />
 
 ## How to create Data Objects
 
