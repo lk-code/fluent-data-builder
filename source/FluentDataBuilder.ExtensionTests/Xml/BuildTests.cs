@@ -123,4 +123,20 @@ public class BuildTests
         result.Should().NotBeNullOrEmpty();
         result.Should().Be("<Root><name>this is a test</name><array><Item>12.34</Item><Item>34</Item><Item>56.78</Item><Item>78.901</Item></array></Root>");
     }
+
+    [TestMethod]
+    public void Build_WithArrayWithAllDataTypes_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
+
+        builder.Add("name", "this is a test");
+        builder.Add("array", new List<object> { (int)15.123412341234, (double)15.123412341234, (float)16.123412341234, false, (decimal)9.123412341234, "test", 'x', (long)9876.123412341234, (ulong)9876.123412341234 }.ToArray());
+
+        XmlDocument xmlDocument = builder.Build();
+
+        string result = xmlDocument.OuterXml;
+
+        result.Should().NotBeNullOrEmpty();
+        result.Should().Be("<Root><name>this is a test</name><array><Item>15</Item><Item>15.123412341234</Item><Item>16.123413</Item><Item>False</Item><Item>9.123412341234</Item><Item>test</Item><Item>x</Item><Item>9876</Item><Item>9876</Item></array></Root>");
+    }
 }

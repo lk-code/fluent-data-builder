@@ -123,4 +123,20 @@ public class BuildTests
         result.Should().NotBeNullOrEmpty();
         result.Should().Be("{\"name\":\"this is a test\",\"array\":[12.34,34,56.78,78.901]}");
     }
+
+    [TestMethod]
+    public void Build_WithArrayWithAllDataTypes_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
+
+        builder.Add("name", "this is a test");
+        builder.Add("array", new List<object> { (int)15.123412341234, (double)15.123412341234, (float)16.123412341234, false, (decimal)9.123412341234, "test", 'x', (long)9876.123412341234, (ulong)9876.123412341234 }.ToArray());
+
+        JsonDocument jsonResult = builder.Build();
+
+        string result = jsonResult.RootElement.GetRawText();
+
+        result.Should().NotBeNullOrEmpty();
+        result.Should().Be("{\"name\":\"this is a test\",\"array\":[15,15.123412341234,16.123413,false,9.123412341234,\"test\",\"x\",9876,9876]}");
+    }
 }
