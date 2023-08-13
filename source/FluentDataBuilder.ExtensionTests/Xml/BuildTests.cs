@@ -89,7 +89,7 @@ public class BuildTests
         string result = xmlDocument.OuterXml;
 
         result.Should().NotBeNullOrEmpty();
-        result.Should().Be("<Root><name>this is a test</name><array><Item>this</Item><Item>123</Item><Item>True</Item><Item>456,78</Item></array></Root>");
+        result.Should().Be("<Root><name>this is a test</name><array><Item>this</Item><Item>123</Item><Item>True</Item><Item>456.78</Item></array></Root>");
     }
 
     [TestMethod]
@@ -121,6 +121,6 @@ public class BuildTests
         string result = xmlDocument.OuterXml;
 
         result.Should().NotBeNullOrEmpty();
-        result.Should().Be("<Root><name>this is a test</name><array><Item>12,34</Item><Item>34</Item><Item>56,78</Item><Item>78,901</Item></array></Root>");
+        result.Should().Be("<Root><name>this is a test</name><array><Item>12.34</Item><Item>34</Item><Item>56.78</Item><Item>78.901</Item></array></Root>");
     }
 }

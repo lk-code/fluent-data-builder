@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Globalization;
 using System.Xml;
 
 namespace FluentDataBuilder.Xml;
@@ -28,34 +29,44 @@ public static class DataBuilderExtensions
         {
             XmlElement element = xmlDocument.CreateElement(entry.Key);
 
-            if (entry.Value is string stringValue)
+            switch (entry.Value)
             {
-                element.InnerText = stringValue;
-            }
-            else if (entry.Value is int intValue)
-            {
-                element.InnerText = intValue.ToString();
-            }
-            else if (entry.Value is double doubleValue)
-            {
-                element.InnerText = doubleValue.ToString();
-            }
-            else if (entry.Value is bool boolValue)
-            {
-                element.InnerText = boolValue.ToString();
-            }
-            else if (entry.Value is Dictionary<string, object> nestedData)
-            {
-                CreateXmlElements(nestedData, element, xmlDocument);
-            }
-            else if (entry.Value is IEnumerable enumerable)
-            {
-                foreach (object item in enumerable)
+                case sbyte sbyteValue:
+                case byte byteValue:
+                case short shortValue:
+                case ushort ushortValue:
+                case int intValue:
+                case uint uintValue:
+                case long longValue:
+                case ulong ulongValue:
+                case float floatValue:
+                case double doubleValue:
+                case decimal decimalValue:
+                case char charValue:
+                case bool boolValue:
+                case string stringValue:
                 {
-                    XmlElement itemElement = xmlDocument.CreateElement("Item");
-                    itemElement.InnerText = item.ToString();
-                    element.AppendChild(itemElement);
+                    element.InnerText = Convert.ToString(entry.Value, CultureInfo.InvariantCulture);
                 }
+                    break;
+                case Dictionary<string, object> items:
+                {
+                    CreateXmlElements(items, element, xmlDocument);
+                } break;
+                case IEnumerable items:
+                {
+                    foreach (object item in items)
+                    {
+                        XmlElement itemElement = xmlDocument.CreateElement("Item");
+                        itemElement.InnerText =  Convert.ToString(item, CultureInfo.InvariantCulture);
+                        element.AppendChild(itemElement);
+                    }
+                } break;
+                default:
+                {
+                    element.InnerText = Convert.ToString(entry.Value, CultureInfo.InvariantCulture);
+                }
+                    break;
             }
 
             parentElement.AppendChild(element);
