@@ -37,6 +37,8 @@ install the nuget `FluentDataBuilder.NewtonsoftJson` and follow the general Data
 
 ### System.Xml - FluentDataBuilder.Xml
 
+install the nuget `FluentDataBuilder.Xml` and follow the general DataBuilder steps. the following code is a sample for the initialization with System.Xml.
+
 `IDataBuilder builder = new DataBuilder();`<br />
 `...`<br />
 `XmlDocument xmlDocument = builder.Build();`<br />
