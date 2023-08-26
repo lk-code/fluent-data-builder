@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <Title>FluentDataBuilder.Microsoft.Extensions.Configuration</Title>
+        <PackageOutputPath>./nupkg</PackageOutputPath>
+        <Company>$(Authors)</Company>
+        <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+        <Authors>lk-code</Authors>
+        <Description>fluent data builder for json and xml</Description>
+        <Copyright>MIT</Copyright>
+        <PackageProjectUrl>https://github.com/lk-code/fluent-data-builder</PackageProjectUrl>
+        <PackageIcon>icon_128.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/lk-code/fluent-data-builder</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+        <VersionPrefix>1.0.0</VersionPrefix>
+        <Version>1.1.0</Version>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentDataBuilder" Version="1.1.20"/>
+        <PackageReference Include="FluentDataBuilder.Json" Version="1.1.22"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\icon_128.png">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+        <None Include="..\..\README.md">
+            <Pack>True</Pack>
+            <PackagePath>\</PackagePath>
+        </None>
+    </ItemGroup>
+
+</Project>

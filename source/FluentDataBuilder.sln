@@ -5,6 +5,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{5D
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
 		..\.gitignore = ..\.gitignore
+		..\.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
+		..\.github\workflows\pull-request.yml = ..\.github\workflows\pull-request.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataBuilder", "FluentDataBuilder\FluentDataBuilder.csproj", "{768AF544-0853-40D9-934B-0C1FBD644833}"
@@ -18,6 +20,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataBuilder.NewtonsoftJson", "FluentDataBuilder.NewtonsoftJson\FluentDataBuilder.NewtonsoftJson.csproj", "{8C0EFC01-39F0-4186-9489-CF9DCEF4F83B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataBuilder.ExtensionTests", "FluentDataBuilder.ExtensionTests\FluentDataBuilder.ExtensionTests.csproj", "{B8E46906-1AAF-4973-865B-52CAFAA309C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataBuilder.Microsoft.Extensions.Configuration", "FluentDataBuilder.Microsoft.Extensions.Configuration\FluentDataBuilder.Microsoft.Extensions.Configuration.csproj", "{EC426EC0-1040-404F-9A45-F4E7D84F3493}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataBuilder.Microsoft.Extensions.Configuration.Tests", "FluentDataBuilder.Microsoft.Extensions.Configuration.Tests\FluentDataBuilder.Microsoft.Extensions.Configuration.Tests.csproj", "{BDF33170-A528-4010-8F2B-68C1E85512EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,5 +55,13 @@ Global
 		{B8E46906-1AAF-4973-865B-52CAFAA309C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8E46906-1AAF-4973-865B-52CAFAA309C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8E46906-1AAF-4973-865B-52CAFAA309C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC426EC0-1040-404F-9A45-F4E7D84F3493}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC426EC0-1040-404F-9A45-F4E7D84F3493}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC426EC0-1040-404F-9A45-F4E7D84F3493}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC426EC0-1040-404F-9A45-F4E7D84F3493}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BDF33170-A528-4010-8F2B-68C1E85512EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BDF33170-A528-4010-8F2B-68C1E85512EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BDF33170-A528-4010-8F2B-68C1E85512EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BDF33170-A528-4010-8F2B-68C1E85512EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
