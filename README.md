@@ -21,6 +21,8 @@ FluentDataBuilder has some NuGet-Libraries to generate output:
 
 ### System.Text.Json - FluentDataBuilder.Json
 
+[![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.Json.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.Json/)
+
 install the nuget `FluentDataBuilder.Json` and follow the general DataBuilder steps. the following code is a sample for the initialization with System.Text.Json.
 
 `IDataBuilder builder = new DataBuilder();`<br />
@@ -29,13 +31,29 @@ install the nuget `FluentDataBuilder.Json` and follow the general DataBuilder st
 
 ### Newtonsoft.Json - FluentDataBuilder.NewtonsoftJson
 
+[![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.NewtonsoftJson.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.NewtonsoftJson/)
+
 install the nuget `FluentDataBuilder.NewtonsoftJson` and follow the general DataBuilder steps. the following code is a sample for the initialization with Newtonsoft.Json.
 
 `IDataBuilder builder = new DataBuilder();`<br />
 `...`<br />
 `JObject jsonResult = builder.Build();`<br />
 
+### Microsoft.Extensions.Configuration - FluentDataBuilder.Microsoft.Extensions.Configuration
+
+[![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.Microsoft.Extensions.Configuration.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.Microsoft.Extensions.Configuration/)
+
+With this package you can store the DataBuilder instance directly as an IConfiguration instance.
+
+install the nuget `FluentDataBuilder.Microsoft.Extensions.Configuration` and follow the general DataBuilder steps. the following code is a sample for the initialization with Newtonsoft.Json.
+
+`IDataBuilder builder = new DataBuilder();`<br />
+`...`<br />
+`IConfiguration configuration = builder.ToConfiguration();`<br />
+
 ### System.Xml - FluentDataBuilder.Xml
+
+[![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.Xml.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.Xml/)
 
 install the nuget `FluentDataBuilder.Xml` and follow the general DataBuilder steps. the following code is a sample for the initialization with System.Xml.
 
