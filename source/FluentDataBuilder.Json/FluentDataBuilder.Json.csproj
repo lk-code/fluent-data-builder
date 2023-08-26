@@ -15,7 +15,7 @@
         <PackageProjectUrl>https://github.com/lk-code/fluent-data-builder</PackageProjectUrl>
         <PackageIcon>icon_128.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <RepositoryUrl>https://github.com/lk-code/html-compiler-tool</RepositoryUrl>
+        <RepositoryUrl>https://github.com/lk-code/fluent-data-builder</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
