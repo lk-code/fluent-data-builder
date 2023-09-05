@@ -7,10 +7,15 @@ namespace FluentDataBuilder.Xml;
 public static class DataBuilderExtensions
 {
     /// <summary>
-    /// 
+    /// Builds an XmlDocument from the properties of an IDataBuilder object.
     /// </summary>
-    /// <param name="builder"></param>
-    /// <returns></returns>
+    /// <param name="builder">The IDataBuilder object whose properties are used to create the XmlDocument.</param>
+    /// <returns>An XmlDocument containing the properties of the IDataBuilder object.</returns>
+    /// <remarks>
+    /// This method creates an XmlDocument and appends a root element named "Root" to it.
+    /// It then populates the XmlDocument with XML elements based on the properties of the IDataBuilder object
+    /// using the CreateXmlElements method.
+    /// </remarks>
     public static XmlDocument Build(this IDataBuilder builder)
     {
         XmlDocument xmlDocument = new XmlDocument();
