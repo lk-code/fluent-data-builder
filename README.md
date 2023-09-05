@@ -25,9 +25,11 @@ FluentDataBuilder has some NuGet-Libraries to generate output:
 
 install the nuget `FluentDataBuilder.Json` and follow the general DataBuilder steps. the following code is a sample for the initialization with System.Text.Json.
 
-`IDataBuilder builder = new DataBuilder();`<br />
-`...`<br />
-`JsonDocument jsonResult = builder.Build();`<br />
+```
+IDataBuilder builder = new DataBuilder();
+...
+JsonDocument jsonResult = builder.Build();
+```
 
 ### Newtonsoft.Json - FluentDataBuilder.NewtonsoftJson
 
@@ -35,9 +37,11 @@ install the nuget `FluentDataBuilder.Json` and follow the general DataBuilder st
 
 install the nuget `FluentDataBuilder.NewtonsoftJson` and follow the general DataBuilder steps. the following code is a sample for the initialization with Newtonsoft.Json.
 
-`IDataBuilder builder = new DataBuilder();`<br />
-`...`<br />
-`JObject jsonResult = builder.Build();`<br />
+```
+IDataBuilder builder = new DataBuilder();
+...
+JObject jsonResult = builder.Build();
+```
 
 ### Microsoft.Extensions.Configuration - FluentDataBuilder.Microsoft.Extensions.Configuration
 
@@ -47,9 +51,11 @@ With this package you can store the DataBuilder instance directly as an IConfigu
 
 install the nuget `FluentDataBuilder.Microsoft.Extensions.Configuration` and follow the general DataBuilder steps. the following code is a sample for the initialization with Newtonsoft.Json.
 
-`IDataBuilder builder = new DataBuilder();`<br />
-`...`<br />
-`IConfiguration configuration = builder.ToConfiguration();`<br />
+```
+IDataBuilder builder = new DataBuilder();
+...
+IConfiguration configuration = builder.ToConfiguration();
+```
 
 ### System.Xml - FluentDataBuilder.Xml
 
@@ -57,77 +63,92 @@ install the nuget `FluentDataBuilder.Microsoft.Extensions.Configuration` and fol
 
 install the nuget `FluentDataBuilder.Xml` and follow the general DataBuilder steps. the following code is a sample for the initialization with System.Xml.
 
-`IDataBuilder builder = new DataBuilder();`<br />
-`...`<br />
-`XmlDocument xmlDocument = builder.Build();`<br />
+```
+IDataBuilder builder = new DataBuilder();
+...
+XmlDocument xmlDocument = builder.Build();
+```
 
 ## How to create Data Objects
 
 First you need to create an instance:
-`IDataBuilder builder = new DataBuilder();`<br />
+
+`IDataBuilder builder = new DataBuilder();`
 
 Use the Add-Method to add data:
 
 ### add simple properties
 
-`builder.Add("StringProperty", "a value");`<br />
-`builder.Add("NumericProperty", 12345);`<br />
-`builder.Add("BooleanProperty", true);`<br />
+```
+builder.Add("StringProperty", "a value");
+builder.Add("NumericProperty", 12345);
+builder.Add("BooleanProperty", true);
+```
 
 **result (in json):**
 
-`{`<br />
-`    "StringProperty": "a value",`<br />
-`    "NumericProperty": 12345,`<br />
-`    "BooleanProperty": true`<br />
-`}`<br />
+```
+{
+    "StringProperty": "a value",
+    "NumericProperty": 12345,
+    "BooleanProperty": true
+}
+```
 
 ### add arrays
 
-`builder.Add("ListProperty", new List<string> { "this", "is", "a", "test" });`<br />
-`builder.Add("ArrayProperty", new string[] { "this", "is", "a", "test" });`<br />
-`builder.Add("MixedListProperty", new List<object> { "value", 123, true, 456.78 });`<br />
+```
+builder.Add("ListProperty", new List<string> { "this", "is", "a", "test" });
+builder.Add("ArrayProperty", new string[] { "this", "is", "a", "test" });
+builder.Add("MixedListProperty", new List<object> { "value", 123, true, 456.78 });
+```
 
 **result (in json):**
 
-`{`<br />
-`    "ListProperty":`<br />
-`    [`<br />
-`        "this",`<br />
-`        "is",`<br />
-`        "a",`<br />
-`        "test"`<br />
-`    ],`<br />
-`    "ArrayProperty":`<br />
-`    [`<br />
-`        "this",`<br />
-`        "is",`<br />
-`        "a",`<br />
-`        "test"`<br />
-`    ],`<br />
-`    "MixedListProperty":`<br />
-`    [`<br />
-`        "value",`<br />
-`        123,`<br />
-`        true,`<br />
-`        456.78`<br />
-`    ]`<br />
-`}`<br />
+```
+{
+    "ListProperty":
+    [
+        "this",
+        "is",
+        "a",
+        "test"
+    ],
+    "ArrayProperty":
+    [
+        "this",
+        "is",
+        "a",
+        "test"
+    ],
+    "MixedListProperty":
+    [
+        "value",
+        123,
+        true,
+        456.78
+    ]
+}
+```
 
 ### add new object
 
-`builder.Add("ObjectProperty", new DataBuilder()`<br />
-`    .Add("StringProperty", "another value")`<br />
-`    .Add("NumericProperty", 67890)`<br />
-`    .Add("BooleanProperty", false));`<br />
+```
+builder.Add("ObjectProperty", new DataBuilder()
+    .Add("StringProperty", "another value")
+    .Add("NumericProperty", 67890)
+    .Add("BooleanProperty", false));
+```
 
 **result (in json):**
 
-`{`<br />
-`    "ObjectProperty":`<br />
-`    {`<br />
-`        "StringProperty": "another value",`<br />
-`        "NumericProperty": 67890,`<br />
-`        "BooleanProperty": false`<br />
-`    }`<br />
-`}`<br />
+```
+{
+    "ObjectProperty":
+    {
+        "StringProperty": "another value",
+        "NumericProperty": 67890,
+        "BooleanProperty": false
+    }
+}
+```
