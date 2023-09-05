@@ -1,6 +1,6 @@
 namespace FluentDataBuilder;
 
-public class DataBuilder : IDataBuilder
+public partial class DataBuilder : IDataBuilder
 {
     private readonly Dictionary<string, object> _data = new ();
 
