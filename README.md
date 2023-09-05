@@ -73,7 +73,9 @@ XmlDocument xmlDocument = builder.Build();
 
 First you need to create an instance:
 
-`IDataBuilder builder = new DataBuilder();`
+```
+IDataBuilder builder = new DataBuilder();
+```
 
 Use the Add-Method to add data:
 
