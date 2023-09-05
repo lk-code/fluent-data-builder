@@ -79,6 +79,11 @@ public static class DataBuilderExtensions
     /// </remarks>
     public static IDataBuilder LoadFrom(this IDataBuilder builder, string json)
     {
+        if (string.IsNullOrEmpty(json))
+        {
+            return builder;
+        }
+        
         JsonDocument jsonDocument = JsonDocument.Parse(json);
         
         builder = jsonDocument.RootElement.EnumerateObject().Aggregate(builder, ConvertToIDataBuilder);
