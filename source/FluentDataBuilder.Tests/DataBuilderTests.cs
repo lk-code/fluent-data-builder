@@ -36,4 +36,57 @@ public class DataBuilderTests
 
         properties.Should().NotBeNull();
     }
+
+    [TestMethod]
+    public void IndexerGet_WithSimpleData_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
+        
+        builder.Add("name", "this is a test");
+        builder.Add("array", new List<string> {"this", "is", "a", "test"}.ToArray());
+        builder.Add("list", new List<string> {"this", "is", "a", "test"});
+
+        var valObject = builder["name"];
+        
+        valObject.Should().NotBeNull();
+        valObject.Should().BeOfType<string>();
+        valObject.Should().Be("this is a test");
+    }
+
+    [TestMethod]
+    public void IndexerGet_WithMultiLevelData_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
+        
+        builder.Add("name", "this is a test");
+        builder.Add("object", new DataBuilder()
+            .Add("value", "im a test")
+            .Add("numeric", 125.77));
+        builder.Add("array", new List<string> {"this", "is", "a", "test"}.ToArray());
+        builder.Add("list", new List<string> {"this", "is", "a", "test"});
+
+        var valObject = builder["object:numeric"];
+        
+        valObject.Should().NotBeNull();
+        valObject.Should().BeOfType<double>();
+        valObject.Should().Be(125.77);
+    }
+
+    [TestMethod]
+    public void IndexerGet_WithMultiLevelDataAndNotExistingEntry_Returns()
+    {
+        IDataBuilder builder = new DataBuilder();
+        
+        builder.Add("name", "this is a test");
+        builder.Add("object", new DataBuilder()
+            .Add("value", "im a test")
+            .Add("numeric", 125.77));
+        builder.Add("array", new List<string> {"this", "is", "a", "test"}.ToArray());
+        builder.Add("list", new List<string> {"this", "is", "a", "test"});
+
+        var action = () => builder["object:notexisting"];
+
+        // Assert
+        action.Should().Throw<KeyNotFoundException>();
+    }
 }
