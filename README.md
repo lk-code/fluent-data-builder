@@ -9,6 +9,7 @@
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=lk-code_fluent-data-builder&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=lk-code_fluent-data-builder)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=lk-code_fluent-data-builder&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=lk-code_fluent-data-builder)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=lk-code_fluent-data-builder&metric=coverage)](https://sonarcloud.io/summary/new_code?id=lk-code_fluent-data-builder)
 
 [![buy me a coffe](https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png)](https://www.buymeacoffee.com/lk.code)
 
