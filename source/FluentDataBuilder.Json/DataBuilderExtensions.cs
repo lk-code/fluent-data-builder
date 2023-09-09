@@ -44,9 +44,9 @@ public static class DataBuilderExtensions
         {
             return builder;
         }
-        
+
         builder = json.RootElement.EnumerateObject().Aggregate(builder, ConvertToIDataBuilder);
-        
+
         return builder;
     }
 
@@ -66,7 +66,7 @@ public static class DataBuilderExtensions
 
         return builder;
     }
-    
+
     /// <summary>
     /// Loads data into an IDataBuilder object from a JSON string.
     /// </summary>
@@ -83,9 +83,9 @@ public static class DataBuilderExtensions
         {
             return builder;
         }
-        
+
         JsonDocument jsonDocument = JsonDocument.Parse(json);
-        
+
         builder = jsonDocument.RootElement.EnumerateObject().Aggregate(builder, ConvertToIDataBuilder);
 
         return builder;
@@ -114,8 +114,10 @@ public static class DataBuilderExtensions
                 builder.Add(jsonProperty.Name, false);
                 break;
             case JsonValueKind.Null:
+            {
                 object? value = null;
                 builder.Add(jsonProperty.Name, value);
+            }
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

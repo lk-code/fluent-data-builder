@@ -141,4 +141,41 @@ public class BuildTests
         result.Should().NotBeNullOrEmpty();
         result.Should().Be("{\"name\":\"this is a test\",\"array\":[15,15.123412341234,16.123413,false,9.123412341234,\"test\",\"x\",9876,9876]}");
     }
+
+    [TestMethod]
+    public void LoadFrom_WithJsonDocumentNull_Returns()
+    {
+        JObject? json = null;
+        IDataBuilder builder = new DataBuilder().LoadFrom(json);
+        
+        builder.Should().NotBeNull();
+        builder.GetProperties().Count.Should().Be(0);
+    }
+
+    [TestMethod]
+    public void LoadFrom_WithSimpleJson_Returns()
+    {
+        JObject json = JObject.Parse("{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"],\"object\":{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"]}}");
+        
+        IDataBuilder builder = new DataBuilder().LoadFrom(json);
+        
+        builder.Should().NotBeNull();
+        var properties = builder.GetProperties();
+        properties.Count.Should().Be(6);
+        properties["name"].Should().Be("this is a test");
+        properties["number"].Should().Be(123);
+        properties["boolean"].Should().Be(true);
+        properties["null"].Should().BeNull();
+        properties["array"].Should().BeOfType<object[]>();
+        properties["array"].Should().BeEquivalentTo(new List<string> { "this", "is", "a", "test" });
+        properties["object"].Should().BeOfType<Dictionary<string, object>>();
+        properties["object"].Should().BeEquivalentTo(new Dictionary<string, object>
+        {
+            { "name", "this is a test" },
+            { "number", 123 },
+            { "boolean", true },
+            { "null", null },
+            { "array", new List<string> { "this", "is", "a", "test" } }
+        });
+    }
 }
