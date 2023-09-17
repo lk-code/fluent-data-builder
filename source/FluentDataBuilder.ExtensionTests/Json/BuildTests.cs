@@ -153,7 +153,7 @@ public class BuildTests
     public void LoadFrom_WithJsonDocumentNull_Returns()
     {
         JsonDocument? json = null;
-        IDataBuilder builder = new DataBuilder().LoadFrom(json);
+        IDataBuilder builder = new DataBuilder().LoadFrom(json!);
 
         builder.Should().NotBeNull();
         builder.GetProperties().Count.Should().Be(0);
@@ -183,7 +183,7 @@ public class BuildTests
             { "name", "this is a test" },
             { "number", 123 },
             { "boolean", true },
-            { "null", null },
+            { "null", null! },
             { "array", new List<string> { "this", "is", "a", "test" } }
         });
     }
@@ -192,7 +192,7 @@ public class BuildTests
     public void LoadFrom_WithStringNull_Returns()
     {
         string? json = null;
-        IDataBuilder builder = new DataBuilder().LoadFrom(json);
+        IDataBuilder builder = new DataBuilder().LoadFrom(json!);
 
         builder.Should().NotBeNull();
         builder.GetProperties().Count.Should().Be(0);
@@ -220,7 +220,7 @@ public class BuildTests
             { "name", "this is a test" },
             { "number", 123 },
             { "boolean", true },
-            { "null", null },
+            { "null", null! },
             { "array", new List<string> { "this", "is", "a", "test" } }
         });
     }
@@ -242,7 +242,7 @@ public class BuildTests
             { "Author", "htmlc" }
         });
         properties["Names"].Should().BeOfType<object[]>();
-        object[] objArray = properties["Names"] as object[];
+        object[] objArray = (properties["Names"] as object[])!;
         objArray[0].Should().BeOfType<Dictionary<string, object>>();
         objArray[0].Should().BeEquivalentTo(new Dictionary<string, object>
         {

@@ -22,7 +22,7 @@ public static class DataBuilderExtensions
         XmlElement rootElement = xmlDocument.CreateElement("Root");
         xmlDocument.AppendChild(rootElement);
 
-        CreateXmlElements(builder.GetProperties(), rootElement, xmlDocument);
+        CreateXmlElements(builder.GetProperties()!, rootElement, xmlDocument);
 
         return xmlDocument;
     }
@@ -51,7 +51,7 @@ public static class DataBuilderExtensions
                 case bool boolValue:
                 case string stringValue:
                 {
-                    element.InnerText = Convert.ToString(entry.Value, CultureInfo.InvariantCulture);
+                    element.InnerText = Convert.ToString(entry.Value, CultureInfo.InvariantCulture)!;
                 }
                     break;
                 case Dictionary<string, object> items:
@@ -63,13 +63,13 @@ public static class DataBuilderExtensions
                     foreach (object item in items)
                     {
                         XmlElement itemElement = xmlDocument.CreateElement("Item");
-                        itemElement.InnerText =  Convert.ToString(item, CultureInfo.InvariantCulture);
+                        itemElement.InnerText =  Convert.ToString(item, CultureInfo.InvariantCulture)!;
                         element.AppendChild(itemElement);
                     }
                 } break;
                 default:
                 {
-                    element.InnerText = Convert.ToString(entry.Value, CultureInfo.InvariantCulture);
+                    element.InnerText = Convert.ToString(entry.Value, CultureInfo.InvariantCulture)!;
                 }
                     break;
             }

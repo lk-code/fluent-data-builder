@@ -17,7 +17,7 @@ public class DataBuilderExtensionsTests
         
         IConfiguration configuration = builder.ToConfiguration();
 
-        string value = configuration.GetSection("Tests:Id").Get<string>();
+        string value = configuration.GetSection("Tests:Id").Get<string>()!;
 
         value.Should().NotBeNullOrEmpty();
         value.Should().Be("7c27a562-d405-4b22-9ade-37503bed6014");
