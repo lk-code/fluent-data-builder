@@ -146,7 +146,7 @@ public class BuildTests
     public void LoadFrom_WithJsonDocumentNull_Returns()
     {
         JObject? json = null;
-        IDataBuilder builder = new DataBuilder().LoadFrom(json);
+        IDataBuilder builder = new DataBuilder().LoadFrom(json!);
         
         builder.Should().NotBeNull();
         builder.GetProperties().Count.Should().Be(0);
@@ -174,7 +174,7 @@ public class BuildTests
             { "name", "this is a test" },
             { "number", 123 },
             { "boolean", true },
-            { "null", null },
+            { "null", null! },
             { "array", new List<string> { "this", "is", "a", "test" } }
         });
     }

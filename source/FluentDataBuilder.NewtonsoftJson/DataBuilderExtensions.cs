@@ -52,7 +52,7 @@ public static class DataBuilderExtensions
                 builder.Add(jsonProperty.Name, ConvertJObjectToDataBuilder(jsonProperty.Value));
                 break;
             case JTokenType.Array:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<List<string>>());
+                builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<List<string>>()!);
                 break;
             case JTokenType.String:
                 builder.Add(jsonProperty.Name, jsonProperty.Value.ToString());
