@@ -25,7 +25,9 @@ public class BuildTests
         string result = jsonResult.RootElement.GetRawText();
 
         result.Should().NotBeNullOrEmpty();
-        result.Should().Be("{\"id\":\"7c27a562-d405-4b22-9ade-37503bed6014\",\"name\":\"John Doe\",\"editor\":{\"typevalue\":\"a object\",\"numbervalue\":55865,\"booleanvalue\":true}}");
+        result.Should()
+            .Be(
+                "{\"id\":\"7c27a562-d405-4b22-9ade-37503bed6014\",\"name\":\"John Doe\",\"editor\":{\"typevalue\":\"a object\",\"numbervalue\":55865,\"booleanvalue\":true}}");
     }
 
     [TestMethod]
@@ -130,14 +132,21 @@ public class BuildTests
         IDataBuilder builder = new DataBuilder();
 
         builder.Add("name", "this is a test");
-        builder.Add("array", new List<object> { (int)15.123412341234, (double)15.123412341234, (float)16.123412341234, false, (decimal)9.123412341234, "test", 'x', (long)9876.123412341234, (ulong)9876.123412341234 }.ToArray());
+        builder.Add("array",
+            new List<object>
+            {
+                (int)15.123412341234, (double)15.123412341234, (float)16.123412341234, false, (decimal)9.123412341234,
+                "test", 'x', (long)9876.123412341234, (ulong)9876.123412341234
+            }.ToArray());
 
         JsonDocument jsonResult = builder.Build();
 
         string result = jsonResult.RootElement.GetRawText();
 
         result.Should().NotBeNullOrEmpty();
-        result.Should().Be("{\"name\":\"this is a test\",\"array\":[15,15.123412341234,16.123413,false,9.123412341234,\"test\",\"x\",9876,9876]}");
+        result.Should()
+            .Be(
+                "{\"name\":\"this is a test\",\"array\":[15,15.123412341234,16.123413,false,9.123412341234,\"test\",\"x\",9876,9876]}");
     }
 
     [TestMethod]
@@ -145,7 +154,7 @@ public class BuildTests
     {
         JsonDocument? json = null;
         IDataBuilder builder = new DataBuilder().LoadFrom(json);
-        
+
         builder.Should().NotBeNull();
         builder.GetProperties().Count.Should().Be(0);
     }
@@ -153,10 +162,12 @@ public class BuildTests
     [TestMethod]
     public void LoadFrom_WithSimpleJson_Returns()
     {
-        JsonDocument json = JsonDocument.Parse("{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"],\"object\":{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"]}}");
-        
+        string jsonValue =
+            "{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"],\"object\":{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"]}}";
+        JsonDocument json = JsonDocument.Parse(jsonValue);
+
         IDataBuilder builder = new DataBuilder().LoadFrom(json);
-        
+
         builder.Should().NotBeNull();
         var properties = builder.GetProperties();
         properties.Count.Should().Be(6);
@@ -182,17 +193,18 @@ public class BuildTests
     {
         string? json = null;
         IDataBuilder builder = new DataBuilder().LoadFrom(json);
-        
+
         builder.Should().NotBeNull();
         builder.GetProperties().Count.Should().Be(0);
     }
 
     [TestMethod]
     public void LoadFrom_WithSimpleJsonString_Returns()
-    {        
+    {
         IDataBuilder builder = new DataBuilder()
-            .LoadFrom("{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"],\"object\":{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"]}}");
-        
+            .LoadFrom(
+                "{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"],\"object\":{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"]}}");
+
         builder.Should().NotBeNull();
         var properties = builder.GetProperties();
         properties.Count.Should().Be(6);
@@ -210,6 +222,41 @@ public class BuildTests
             { "boolean", true },
             { "null", null },
             { "array", new List<string> { "this", "is", "a", "test" } }
+        });
+    }
+
+    [TestMethod]
+    public void LoadFrom_WithSpecificDataObjectFromString_Returns()
+    {
+        IDataBuilder builder = new DataBuilder()
+            .LoadFrom(
+                "{\"Title\":\"Section Page\",\"Website\":{\"Author\":\"htmlc\"},\"Names\":[{\"Name\":\"Max\"},{\"Name\":\"Lisa\"},{\"Name\":\"Fred\"}]}");
+
+        builder.Should().NotBeNull();
+        var properties = builder.GetProperties();
+        properties.Count.Should().Be(3);
+        properties["Title"].Should().Be("Section Page");
+        properties["Website"].Should().BeOfType<Dictionary<string, object>>();
+        properties["Website"].Should().BeEquivalentTo(new Dictionary<string, object>
+        {
+            { "Author", "htmlc" }
+        });
+        properties["Names"].Should().BeOfType<object[]>();
+        object[] objArray = properties["Names"] as object[];
+        objArray[0].Should().BeOfType<Dictionary<string, object>>();
+        objArray[0].Should().BeEquivalentTo(new Dictionary<string, object>
+        {
+            { "Name", "Max" }
+        });
+        objArray[1].Should().BeOfType<Dictionary<string, object>>();
+        objArray[1].Should().BeEquivalentTo(new Dictionary<string, object>
+        {
+            { "Name", "Lisa" }
+        });
+        objArray[2].Should().BeOfType<Dictionary<string, object>>();
+        objArray[2].Should().BeEquivalentTo(new Dictionary<string, object>
+        {
+            { "Name", "Fred" }
         });
     }
 }

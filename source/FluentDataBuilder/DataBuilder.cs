@@ -67,7 +67,7 @@ public class DataBuilder : IDataBuilder
             else
             {
                 // Move deeper into the hierarchy
-                currentData = currentData[subKey] as Dictionary<string, object>;
+                currentData = (currentData[subKey] as Dictionary<string, object>)!;
             }
         }
 
@@ -98,7 +98,7 @@ public class DataBuilder : IDataBuilder
                 }
 
                 // Move deeper into the hierarchy
-                currentData = currentData[subKey] as Dictionary<string, object>;
+                currentData = (currentData[subKey] as Dictionary<string, object>)!;
             }
         }
     }

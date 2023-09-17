@@ -17,10 +17,9 @@ public static class DataBuilderExtensions
     {
         string jsonString = JsonSerializer.Serialize(builder.GetProperties(), new JsonSerializerOptions
         {
-            WriteIndented = false // Option, um den JSON-String formatiert und leserlich zu machen
+            WriteIndented = false
         });
 
-        // Den JSON-String in ein JsonDocument umwandeln
         JsonDocument jsonDocument = JsonDocument.Parse(jsonString);
 
         return jsonDocument;
@@ -45,7 +44,11 @@ public static class DataBuilderExtensions
             return builder;
         }
 
-        builder = json.RootElement.EnumerateObject().Aggregate(builder, ConvertToIDataBuilder);
+        builder = json.RootElement
+            .EnumerateObject()
+            .Aggregate(builder,
+                (currentBuilder, jsonProperty) =>
+                    ConvertToIDataBuilder(currentBuilder, jsonProperty.Name, jsonProperty.Value));
 
         return builder;
     }
@@ -62,7 +65,11 @@ public static class DataBuilderExtensions
     /// </remarks>
     public static IDataBuilder LoadFrom(this IDataBuilder builder, JsonElement json)
     {
-        builder = json.EnumerateObject().Aggregate(builder, ConvertToIDataBuilder);
+        builder = json
+            .EnumerateObject()
+            .Aggregate(builder,
+                (currentBuilder, jsonProperty) =>
+                    ConvertToIDataBuilder(currentBuilder, jsonProperty.Name, jsonProperty.Value));
 
         return builder;
     }
@@ -86,43 +93,47 @@ public static class DataBuilderExtensions
 
         JsonDocument jsonDocument = JsonDocument.Parse(json);
 
-        builder = jsonDocument.RootElement.EnumerateObject().Aggregate(builder, ConvertToIDataBuilder);
+        builder = jsonDocument.RootElement
+            .EnumerateObject()
+            .Aggregate(builder,
+                (currentBuilder, jsonProperty) =>
+                    ConvertToIDataBuilder(currentBuilder, jsonProperty.Name, jsonProperty.Value));
 
         return builder;
     }
 
-    private static IDataBuilder ConvertToIDataBuilder(IDataBuilder builder, JsonProperty jsonProperty)
+    private static IDataBuilder ConvertToIDataBuilder(IDataBuilder builder, string key, JsonElement jsonElement)
     {
-        switch (jsonProperty.Value.ValueKind)
+        builder.Add(key, GetJsonNode(jsonElement));
+
+        return builder;
+    }
+
+    private static object? GetJsonNode(JsonElement jsonElement)
+    {
+        switch (jsonElement.ValueKind)
         {
             case JsonValueKind.Object:
-                builder.Add(jsonProperty.Name, new DataBuilder().LoadFrom(jsonProperty.Value));
-                break;
+                return new DataBuilder().LoadFrom(jsonElement).GetProperties();
             case JsonValueKind.Array:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.EnumerateArray().Select(x => x.ToString()).ToList());
-                break;
+                return jsonElement.EnumerateArray()
+                    .Select(GetJsonNode)
+                    .ToArray();
             case JsonValueKind.String:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.GetString());
-                break;
+                return jsonElement.GetString();
             case JsonValueKind.Number:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.GetInt32());
-                break;
+                return jsonElement.GetInt32();
             case JsonValueKind.True:
-                builder.Add(jsonProperty.Name, true);
-                break;
+                return true;
             case JsonValueKind.False:
-                builder.Add(jsonProperty.Name, false);
-                break;
+                return false;
             case JsonValueKind.Null:
             {
                 object? value = null;
-                builder.Add(jsonProperty.Name, value);
+                return value;
             }
-                break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
-        return builder;
     }
 }
