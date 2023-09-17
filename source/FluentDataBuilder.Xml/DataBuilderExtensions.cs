@@ -36,20 +36,20 @@ public static class DataBuilderExtensions
 
             switch (entry.Value)
             {
-                case sbyte sbyteValue:
-                case byte byteValue:
-                case short shortValue:
-                case ushort ushortValue:
-                case int intValue:
-                case uint uintValue:
-                case long longValue:
-                case ulong ulongValue:
-                case float floatValue:
-                case double doubleValue:
-                case decimal decimalValue:
-                case char charValue:
-                case bool boolValue:
-                case string stringValue:
+                case sbyte:
+                case byte:
+                case short:
+                case ushort:
+                case int:
+                case uint:
+                case long:
+                case ulong:
+                case float:
+                case double:
+                case decimal:
+                case char:
+                case bool:
+                case string:
                 {
                     element.InnerText = Convert.ToString(entry.Value, CultureInfo.InvariantCulture)!;
                 }

@@ -35,7 +35,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentDataBuilder" Version="1.1.45" />
+      <PackageReference Include="FluentDataBuilder" Version="1.1.46" />
     </ItemGroup>
 
 </Project>

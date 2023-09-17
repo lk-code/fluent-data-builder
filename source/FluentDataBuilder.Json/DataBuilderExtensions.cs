@@ -133,7 +133,7 @@ public static class DataBuilderExtensions
                 return value;
             }
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException($"unknown data type: {jsonElement.ValueKind}");
         }
     }
 }
