@@ -89,4 +89,26 @@ public class DataBuilderTests
         // Assert
         action.Should().Throw<KeyNotFoundException>();
     }
+
+    [TestMethod]
+    public void Merge_WithSimpleDataBuilder_Returns()
+    {
+        IDataBuilder leftBuilder = new DataBuilder()
+            .Add("String", "this is a string")
+            .Add("Dynamic", "value");
+        IDataBuilder rightBuilder = new DataBuilder()
+            .Add("Number", 125.86)
+            .Add("Dynamic", "new value");
+        
+        IDataBuilder builder = DataBuilder.Merge(leftBuilder, rightBuilder);
+        
+        builder["String"].Should().NotBeNull();
+        builder["String"].Should().Be("this is a string");
+        
+        builder["Number"].Should().NotBeNull();
+        builder["Number"].Should().Be(125.86);
+        
+        builder["Dynamic"].Should().NotBeNull();
+        builder["Dynamic"].Should().Be("new value");
+    }
 }
