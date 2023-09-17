@@ -1,3 +1,5 @@
+using FluentDataBuilder.Helper;
+
 namespace FluentDataBuilder;
 
 public class DataBuilder : IDataBuilder
@@ -6,6 +8,11 @@ public class DataBuilder : IDataBuilder
 
     public DataBuilder()
     {
+    }
+
+    public DataBuilder(Dictionary<string, object?> data)
+    {
+        _data = data;
     }
 
     /// <inheritdoc />
@@ -101,5 +108,15 @@ public class DataBuilder : IDataBuilder
                 currentData = (currentData[subKey] as Dictionary<string, object>)!;
             }
         }
+    }
+    
+    public static IDataBuilder Merge(IDataBuilder left, IDataBuilder right)
+    {
+        Dictionary<string, object?> mergedProperties = new();
+        
+        mergedProperties = mergedProperties.MergeDictionaries(left.GetProperties());
+        mergedProperties = mergedProperties.MergeDictionaries(right.GetProperties());
+        
+        return new DataBuilder(mergedProperties);
     }
 }
