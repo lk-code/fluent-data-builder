@@ -2,14 +2,14 @@ namespace FluentDataBuilder;
 
 public class DataBuilder : IDataBuilder
 {
-    private readonly Dictionary<string, object> _data = new();
+    private readonly Dictionary<string, object?> _data = new();
 
     public DataBuilder()
     {
     }
 
     /// <inheritdoc />
-    public IDataBuilder Add(string name, object value)
+    public IDataBuilder Add(string name, object? value)
     {
         SetNestedValue(_data, name, value);
 
@@ -33,22 +33,22 @@ public class DataBuilder : IDataBuilder
     }
 
     /// <inheritdoc />
-    public Dictionary<string, object> GetProperties()
+    public Dictionary<string, object?> GetProperties()
     {
         return _data;
     }
 
     /// <inheritdoc />
-    public object this[string key]
+    public object? this[string key]
     {
         get { return GetNestedValue(_data, key); }
         set { SetNestedValue(_data, key, value); }
     }
 
-    private object GetNestedValue(Dictionary<string, object> data, string key)
+    private object? GetNestedValue(Dictionary<string, object?> data, string key)
     {
         var keys = key.Split(':');
-        Dictionary<string, object> currentData = data;
+        Dictionary<string, object?> currentData = data;
 
         for (int i = 0; i < keys.Length; i++)
         {
@@ -75,10 +75,10 @@ public class DataBuilder : IDataBuilder
         throw new InvalidOperationException("Unexpected error while accessing the hierarchical dictionary.");
     }
 
-    private void SetNestedValue(Dictionary<string, object> data, string key, object value)
+    private void SetNestedValue(Dictionary<string, object?> data, string key, object? value)
     {
         var keys = key.Split(':');
-        Dictionary<string, object> currentData = data;
+        Dictionary<string, object?> currentData = data;
 
         for (int i = 0; i < keys.Length; i++)
         {
