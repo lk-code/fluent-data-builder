@@ -44,13 +44,11 @@ public static class DataBuilderExtensions
             return builder;
         }
 
-        builder = json.RootElement
+        return json.RootElement
             .EnumerateObject()
             .Aggregate(builder,
                 (currentBuilder, jsonProperty) =>
                     ConvertToIDataBuilder(currentBuilder, jsonProperty.Name, jsonProperty.Value));
-
-        return builder;
     }
 
     /// <summary>
