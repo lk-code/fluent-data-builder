@@ -30,7 +30,7 @@ jobs:
       - name: Install htmlc
         shell: pwsh
         run: |
-          dotnet tool update htmlc
+          dotnet tool update --global htmlc
         
       - name: Build with htmlc
         shell: pwsh
