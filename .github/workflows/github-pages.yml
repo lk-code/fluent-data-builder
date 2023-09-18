@@ -23,14 +23,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+            
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
         
       - name: Setup Pages
         uses: actions/configure-pages@v3
         
       - name: Install htmlc
         shell: pwsh
-        run: |
-          dotnet tool update --global htmlc
+        run: dotnet tool install --global htmlc
         
       - name: Build with htmlc
         shell: pwsh
