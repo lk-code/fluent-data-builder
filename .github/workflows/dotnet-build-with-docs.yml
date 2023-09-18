@@ -6,9 +6,7 @@ on:
       - main
   workflow_dispatch:
 
-permissions:
-  pages: write
-  id-token: write
+permissions: write-all
   
 jobs:
   build:
