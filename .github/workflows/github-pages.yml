@@ -39,7 +39,7 @@ jobs:
       - name: Build with htmlc
         shell: pwsh
         run: |
-          cd /home/runner/work/fluent-data-builder/fluent-data-builder
+          cd /home/runner/work/fluent-data-builder/fluent-data-builder/docs
           ls -la
         
       - name: Build with htmlc
