@@ -35,23 +35,18 @@ jobs:
       - name: Build with htmlc
         shell: pwsh
         run: |
+          cd docs
           ls -la
         
       - name: Build with htmlc
         shell: pwsh
         run: |
-          cd /docs
-          ls -la
-        
-      - name: Build with htmlc
-        shell: pwsh
-        run: |
-          htmlc compile /docs/src /docs/dist
+          htmlc compile docs/src docs/dist
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: "/docs/dist"
+          path: "docs/dist"
 
   # Deployment job
   deploy:
