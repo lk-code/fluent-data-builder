@@ -35,6 +35,17 @@ jobs:
       - name: Build with htmlc
         shell: pwsh
         run: |
+          ls -la
+        
+      - name: Build with htmlc
+        shell: pwsh
+        run: |
+          cd /docs
+          ls -la
+        
+      - name: Build with htmlc
+        shell: pwsh
+        run: |
           htmlc compile /docs/src /docs/dist
           
       - name: Upload artifact
