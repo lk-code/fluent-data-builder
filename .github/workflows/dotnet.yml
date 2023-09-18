@@ -1,12 +1,10 @@
-name: .NET Build and GitHub Pages
+name: .NET Build
 
 on:
   push:
     branches:
       - main
   workflow_dispatch:
-
-permissions: write-all
   
 jobs:
   build:
@@ -14,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      VERSION: 1.2.${{ github.run_number }}
+      VERSION: 1.1.${{ github.run_number }}
 
     steps:
       - name: Set up JDK 17
@@ -94,18 +92,3 @@ jobs:
         with:
           name: ${{ env.VERSION }}
           path: "**/*.nupkg"
-          
-  deploy:
-  
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-      
-    runs-on: ubuntu-latest
-    
-    needs: build
-    
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
