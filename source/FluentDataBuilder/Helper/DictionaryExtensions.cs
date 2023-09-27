@@ -5,17 +5,36 @@ public static class DictionaryExtensions
     public static Dictionary<string, object?> MergeDictionaries(this Dictionary<string, object?> left,
         Dictionary<string, object?> right)
     {
-        var mergedDictionary = new Dictionary<string, object?>(left);
+        Dictionary<string, object?> mergedDictionary = new(left);
 
-        foreach (var kvp in right)
+        foreach ((string? key, object? value) in right)
         {
-            if (mergedDictionary.ContainsKey(kvp.Key))
+            if (!mergedDictionary.ContainsKey(key))
             {
-                mergedDictionary[kvp.Key] = kvp.Value;
+                mergedDictionary.Add(key, value);
+                continue;
+            }
+
+            if (value is object[] arrValue)
+            {
+                if (mergedDictionary[key] is object[] leftArrValue)
+                {
+                    mergedDictionary[key] = leftArrValue.Concat(arrValue)
+                        .Distinct()
+                        .ToArray();
+                }
+                else
+                {
+                    mergedDictionary[key] = value;
+                }
+            }
+            else if (value is object)
+            {
+                mergedDictionary[key] = value;
             }
             else
             {
-                mergedDictionary.Add(kvp.Key, kvp.Value);
+                mergedDictionary[key] = value;
             }
         }
 
