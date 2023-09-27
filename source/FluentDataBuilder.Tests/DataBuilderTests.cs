@@ -111,4 +111,31 @@ public class DataBuilderTests
         builder["Dynamic"].Should().NotBeNull();
         builder["Dynamic"].Should().Be("new value");
     }
+
+    [TestMethod]
+    public void Merge_WithPartialOverlappingDataBuilder_Returns()
+    {
+        IDataBuilder leftBuilder = new DataBuilder()
+            .Add("first-value", "this is a string")
+            .Add("list-values", new List<string> {"value1", "value2", "value3"}.ToArray());
+        IDataBuilder rightBuilder = new DataBuilder()
+            .Add("other-value", 125.86)
+            .Add("list-values", new List<string> {"value2", "value3", "value4"}.ToArray());
+        
+        IDataBuilder builder = DataBuilder.Merge(leftBuilder, rightBuilder);
+        
+        builder["first-value"].Should().NotBeNull();
+        builder["first-value"].Should().Be("this is a string");
+        
+        builder["other-value"].Should().NotBeNull();
+        builder["other-value"].Should().Be(125.86);
+        
+        builder["list-values"].Should().NotBeNull();
+        builder["list-values"].Should().BeOfType<object[]>();
+        (builder["list-values"] as object[]).Should().HaveCount(4);
+        (builder["list-values"] as object[])![0].Should().Be("value1");
+        (builder["list-values"] as object[])![1].Should().Be("value2");
+        (builder["list-values"] as object[])![2].Should().Be("value3");
+        (builder["list-values"] as object[])![3].Should().Be("value4");
+    }
 }

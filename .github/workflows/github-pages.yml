@@ -23,24 +23,32 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+            
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
         
       - name: Setup Pages
         uses: actions/configure-pages@v3
         
       - name: Install htmlc
         shell: pwsh
-        run: |
-          dotnet tool update htmlc
+        run: dotnet tool install --global htmlc
         
       - name: Build with htmlc
         shell: pwsh
         run: |
-          htmlc compile /docs/src /docs/dist
+          cd /home/runner/work/fluent-data-builder/fluent-data-builder/docs
+          ls -la
+        
+      - name: htmlc compile
+        run: htmlc compile docs
           
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
-          path: "/docs/dist"
+          path: "docs/dist"
 
   # Deployment job
   deploy:
