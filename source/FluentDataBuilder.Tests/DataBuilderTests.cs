@@ -113,7 +113,7 @@ public class DataBuilderTests
     }
 
     [TestMethod]
-    public void Merge_WithPartialOverlappingDataBuilder_Returns()
+    public void Merge_WithPartialOverlappingArrayDataBuilder_Returns()
     {
         IDataBuilder leftBuilder = new DataBuilder()
             .Add("first-value", "this is a string")
@@ -137,5 +137,34 @@ public class DataBuilderTests
         (builder["list-values"] as object[])![1].Should().Be("value2");
         (builder["list-values"] as object[])![2].Should().Be("value3");
         (builder["list-values"] as object[])![3].Should().Be("value4");
+    }
+
+    [TestMethod]
+    public void Merge_WithPartialOverlappingObjectsDataBuilder_Returns()
+    {
+        IDataBuilder leftBuilder = new DataBuilder()
+            .Add("first-value", "this is a string")
+            .Add("object-values", new DataBuilder()
+                .Add("string", "text")
+                .Add("number", 133.22));
+        IDataBuilder rightBuilder = new DataBuilder()
+            .Add("other-value", 125.86)
+            .Add("object-values", new DataBuilder()
+                .Add("bool", true)
+                .Add("string", "a description"));
+        
+        IDataBuilder builder = DataBuilder.Merge(leftBuilder, rightBuilder);
+        
+        builder["first-value"].Should().NotBeNull();
+        builder["first-value"].Should().Be("this is a string");
+        
+        builder["other-value"].Should().NotBeNull();
+        builder["other-value"].Should().Be(125.86);
+        
+        builder["object-values"].Should().NotBeNull();
+        builder["object-values"].Should().BeOfType<Dictionary<string, object>>();
+        (builder["object-values"] as Dictionary<string, object>)!["number"].Should().Be(133.22);
+        (builder["object-values"] as Dictionary<string, object>)!["bool"].Should().Be(true);
+        (builder["object-values"] as Dictionary<string, object>)!["string"].Should().Be("a description");
     }
 }
