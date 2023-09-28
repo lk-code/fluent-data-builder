@@ -24,8 +24,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentDataBuilder" Version="1.1.65" />
-        <PackageReference Include="FluentDataBuilder.Json" Version="1.1.65" />
+        <PackageReference Include="FluentDataBuilder" Version="1.1.66" />
+        <PackageReference Include="FluentDataBuilder.Json" Version="1.1.66" />
         <PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="7.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
