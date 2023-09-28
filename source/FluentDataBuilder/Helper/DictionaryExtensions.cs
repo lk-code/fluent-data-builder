@@ -28,6 +28,17 @@ public static class DictionaryExtensions
                     mergedDictionary[key] = value;
                 }
             }
+            else if (value is Dictionary<string, object> dictionaryValue)
+            {
+                if (mergedDictionary[key] is Dictionary<string, object?> leftDictionaryValue)
+                {
+                    mergedDictionary[key] = leftDictionaryValue.MergeDictionaries(dictionaryValue);
+                }
+                else
+                {
+                    mergedDictionary[key] = value;
+                }
+            }
             else if (value is object)
             {
                 mergedDictionary[key] = value;
