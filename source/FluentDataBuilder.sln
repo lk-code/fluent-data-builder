@@ -5,8 +5,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution", "Solution", "{5D
 		..\LICENSE = ..\LICENSE
 		..\README.md = ..\README.md
 		..\.gitignore = ..\.gitignore
-		..\.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
-		..\.github\workflows\pull-request.yml = ..\.github\workflows\pull-request.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataBuilder", "FluentDataBuilder\FluentDataBuilder.csproj", "{768AF544-0853-40D9-934B-0C1FBD644833}"
@@ -24,6 +22,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataBuilder.Microsoft.Extensions.Configuration", "FluentDataBuilder.Microsoft.Extensions.Configuration\FluentDataBuilder.Microsoft.Extensions.Configuration.csproj", "{EC426EC0-1040-404F-9A45-F4E7D84F3493}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentDataBuilder.Microsoft.Extensions.Configuration.Tests", "FluentDataBuilder.Microsoft.Extensions.Configuration.Tests\FluentDataBuilder.Microsoft.Extensions.Configuration.Tests.csproj", "{BDF33170-A528-4010-8F2B-68C1E85512EF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{A4762FA5-C1D2-48EF-AE75-83A5A0015971}"
+	ProjectSection(SolutionItems) = preProject
+		..\.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
+		..\.github\workflows\pull-request.yml = ..\.github\workflows\pull-request.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,5 +67,8 @@ Global
 		{BDF33170-A528-4010-8F2B-68C1E85512EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BDF33170-A528-4010-8F2B-68C1E85512EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BDF33170-A528-4010-8F2B-68C1E85512EF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A4762FA5-C1D2-48EF-AE75-83A5A0015971} = {5D97EA72-0542-48F6-BA0F-5DADFE3B39C6}
 	EndGlobalSection
 EndGlobal
