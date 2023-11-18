@@ -10,7 +10,7 @@
         <Company>$(Authors)</Company>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <Authors>lk-code</Authors>
-        <Description>fluent data builder for json and xml</Description>
+        <Description>fluent data builder for json (System.Text.Json)</Description>
         <Copyright>MIT</Copyright>
         <PackageProjectUrl>https://github.com/lk-code/fluent-data-builder</PackageProjectUrl>
         <PackageIcon>icon_128.png</PackageIcon>
