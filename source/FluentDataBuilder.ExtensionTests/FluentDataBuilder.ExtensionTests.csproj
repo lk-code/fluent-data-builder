@@ -23,6 +23,7 @@
         <ProjectReference Include="..\FluentDataBuilder.Json\FluentDataBuilder.Json.csproj"/>
         <ProjectReference Include="..\FluentDataBuilder.NewtonsoftJson\FluentDataBuilder.NewtonsoftJson.csproj"/>
         <ProjectReference Include="..\FluentDataBuilder.Xml\FluentDataBuilder.Xml.csproj"/>
+        <ProjectReference Include="..\FluentDataBuilder.Yaml\FluentDataBuilder.Yaml.csproj" />
     </ItemGroup>
 
 </Project>

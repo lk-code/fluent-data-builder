@@ -5,12 +5,12 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
-        <Title>FluentDataBuilder.NewtonsoftJson</Title>
+        <Title>FluentDataBuilder.Yaml</Title>
         <PackageOutputPath>./nupkg</PackageOutputPath>
         <Company>$(Authors)</Company>
         <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
         <Authors>lk-code</Authors>
-        <Description>fluent data builder for json (Newtonsoft.Json)</Description>
+        <Description>fluent data builder for yaml</Description>
         <Copyright>MIT</Copyright>
         <PackageProjectUrl>https://github.com/lk-code/fluent-data-builder</PackageProjectUrl>
         <PackageIcon>icon_128.png</PackageIcon>
@@ -24,11 +24,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentDataBuilder" Version="1.2.74" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    </ItemGroup>
-
-    <ItemGroup>
         <None Include="..\..\icon_128.png">
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
@@ -37,6 +32,11 @@
             <Pack>True</Pack>
             <PackagePath>\</PackagePath>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentDataBuilder" Version="1.2.74" />
+        <PackageReference Include="YamlDotNet" Version="13.7.1" />
     </ItemGroup>
 
 </Project>

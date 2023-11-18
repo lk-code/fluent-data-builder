@@ -2,10 +2,12 @@
 
 ![html-compiler-tool](https://raw.githubusercontent.com/lk-code/fluent-data-builder/main/icon_128.png)
 
-[![.NET Version](https://img.shields.io/badge/dotnet%20version-net6.0-blue?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder/)
-[![.NET Version](https://img.shields.io/badge/dotnet%20version-net7.0-blue?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder/)
 [![License](https://img.shields.io/github/license/lk-code/fluent-data-builder.svg?style=flat-square)](https://github.com/lk-code/fluent-data-builder/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/nuget/dt/FluentDataBuilder.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder/)
+
+[![.NET Version](https://img.shields.io/badge/dotnet%20version-net6.0-blue?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder/)
+[![.NET Version](https://img.shields.io/badge/dotnet%20version-net7.0-blue?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder/)
+[![.NET Version](https://img.shields.io/badge/dotnet%20version-net8.0-blue?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder/)
 
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=lk-code_fluent-data-builder&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=lk-code_fluent-data-builder)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=lk-code_fluent-data-builder&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=lk-code_fluent-data-builder)
