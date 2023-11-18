@@ -21,16 +21,17 @@ A fluent data builder for json and xml
 
 FluentDataBuilder has some NuGet-Libraries to generate output:
 
-| Package                                              | Target                             | NuGet |
-|------------------------------------------------------|------------------------------------|--------------|
-| FluentDataBuilder.Json                               | System.Text.Json                   | [![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.Json.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.Json/) |
-| FluentDataBuilder.NewtonsoftJson                     | Newtonsoft.Json                    | [![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.NewtonsoftJson.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.NewtonsoftJson/) |
+| Package                                              | Target                             | NuGet                                                                                                                                                                                                       |
+|------------------------------------------------------|------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| FluentDataBuilder.Json                               | System.Text.Json                   | [![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.Json.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.Json/)                                                             |
+| FluentDataBuilder.NewtonsoftJson                     | Newtonsoft.Json                    | [![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.NewtonsoftJson.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.NewtonsoftJson/)                                         |
 | FluentDataBuilder.Microsoft.Extensions.Configuration | Microsoft.Extensions.Configuration | [![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.Microsoft.Extensions.Configuration.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.Microsoft.Extensions.Configuration/) |
-| FluentDataBuilder.Xml                                | System.Xml                         | [![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.Xml.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.Xml/) |
+| FluentDataBuilder.Xml                                | System.Xml                         | [![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.Xml.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.Xml/)                                                               |
+| FluentDataBuilder.Yaml                               | YamlDotNet                         | [![NuGet](https://img.shields.io/nuget/v/FluentDataBuilder.Yaml.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder.Yaml/)                                                              |
 
 ## Examples
 
-### System.Text.Json - FluentDataBuilder.Json
+### FluentDataBuilder.Json (System.Text.Json)
 
 install the nuget `FluentDataBuilder.Json` and follow the general DataBuilder steps. the following code is a sample for the initialization with System.Text.Json.
 
@@ -40,7 +41,7 @@ IDataBuilder builder = new DataBuilder();
 JsonDocument jsonResult = builder.Build();
 ```
 
-### Newtonsoft.Json - FluentDataBuilder.NewtonsoftJson
+### FluentDataBuilder.NewtonsoftJson (Newtonsoft.Json)
 
 install the nuget `FluentDataBuilder.NewtonsoftJson` and follow the general DataBuilder steps. the following code is a sample for the initialization with Newtonsoft.Json.
 
@@ -50,7 +51,7 @@ IDataBuilder builder = new DataBuilder();
 JObject jsonResult = builder.Build();
 ```
 
-### Microsoft.Extensions.Configuration - FluentDataBuilder.Microsoft.Extensions.Configuration
+### FluentDataBuilder.Microsoft.Extensions.Configuration (Microsoft.Extensions.Configuration)
 
 With this package you can store the DataBuilder instance directly as an IConfiguration instance.
 
@@ -62,7 +63,7 @@ IDataBuilder builder = new DataBuilder();
 IConfiguration configuration = builder.ToConfiguration();
 ```
 
-### System.Xml - FluentDataBuilder.Xml
+### FluentDataBuilder.Xml (System.Xml)
 
 install the nuget `FluentDataBuilder.Xml` and follow the general DataBuilder steps. the following code is a sample for the initialization with System.Xml.
 
@@ -70,6 +71,16 @@ install the nuget `FluentDataBuilder.Xml` and follow the general DataBuilder ste
 IDataBuilder builder = new DataBuilder();
 ...
 XmlDocument xmlDocument = builder.Build();
+```
+
+### FluentDataBuilder.Yaml (YamlDotNet)
+
+install the nuget `FluentDataBuilder.Yaml` and follow the general DataBuilder steps..
+
+```
+IDataBuilder builder = new DataBuilder();
+...
+string yamlContent = builder.Build();
 ```
 
 ## How to create Data Objects
