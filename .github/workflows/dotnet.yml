@@ -86,6 +86,8 @@ jobs:
         run: |
           dotnet build -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
           dotnet pack -c Release source/FluentDataBuilder/FluentDataBuilder.csproj /p:PackageVersion=${{ env.VERSION }}
+          cd source/FluentDataBuilder
+          ls
 
       - name: Build FluentDataBuilder.Json
         shell: pwsh
