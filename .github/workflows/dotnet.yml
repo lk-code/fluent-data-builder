@@ -92,7 +92,7 @@ jobs:
       - name: Build FluentDataBuilder.Json
         shell: pwsh
         run: |
-          dotnet add package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
+          dotnet add source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
           dotnet build -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
           dotnet pack -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj /p:PackageVersion=${{ env.VERSION }}
           
