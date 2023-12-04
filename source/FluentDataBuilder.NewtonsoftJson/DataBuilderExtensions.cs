@@ -48,26 +48,33 @@ public static class DataBuilderExtensions
     {
         switch (jsonProperty.Value.Type)
         {
+            case JTokenType.Null:
+                builder.Add(jsonProperty.Name, (object?)null);
+                break;
             case JTokenType.Object:
                 builder.Add(jsonProperty.Name, ConvertJObjectToDataBuilder(jsonProperty.Value));
                 break;
             case JTokenType.Array:
                 builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<List<string>>()!);
                 break;
-            case JTokenType.String:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.ToString());
-                break;
             case JTokenType.Integer:
                 builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<int>());
+                break;
+            case JTokenType.Float:
+                builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<float>());
                 break;
             case JTokenType.Boolean:
                 builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<bool>());
                 break;
-            case JTokenType.Null:
-            {
-                object? value = null;
-                builder.Add(jsonProperty.Name, value);
-            }
+            case JTokenType.Guid:
+                builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<Guid>());
+                break;
+            case JTokenType.Undefined:
+            case JTokenType.Date:
+            case JTokenType.Raw:
+            case JTokenType.String:
+            case JTokenType.Uri:
+                builder.Add(jsonProperty.Name, jsonProperty.Value.ToString());
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

@@ -111,25 +111,60 @@ public static class DataBuilderExtensions
     {
         switch (jsonElement.ValueKind)
         {
+            case JsonValueKind.Null:
+                return (object?)null;
             case JsonValueKind.Object:
                 return new DataBuilder().LoadFrom(jsonElement).GetProperties();
             case JsonValueKind.Array:
                 return jsonElement.EnumerateArray()
                     .Select(GetJsonNode)
                     .ToArray();
-            case JsonValueKind.String:
-                return jsonElement.GetString();
             case JsonValueKind.Number:
-                return jsonElement.GetInt32();
+            {
+                if (jsonElement.TryGetInt32(out int intValue))
+                {
+                    return intValue;
+                }
+
+                if (jsonElement.TryGetInt64(out long longValue))
+                {
+                    return longValue;
+                }
+
+                if (jsonElement.TryGetDouble(out double doubleValue))
+                {
+                    return doubleValue;
+                }
+
+                if (jsonElement.TryGetDecimal(out decimal decimalValue))
+                {
+                    return decimalValue;
+                }
+
+                if (jsonElement.TryGetSingle(out float floatValue))
+                {
+                    return floatValue;
+                }
+
+                if (jsonElement.TryGetUInt32(out uint uintValue))
+                {
+                    return uintValue;
+                }
+
+                if (jsonElement.TryGetUInt64(out ulong ulongValue))
+                {
+                    return ulongValue;
+                }
+
+                throw new ArgumentOutOfRangeException($"unknown numeric data type: {jsonElement.ValueKind}");
+            }
+                break;
             case JsonValueKind.True:
                 return true;
             case JsonValueKind.False:
                 return false;
-            case JsonValueKind.Null:
-            {
-                object? value = null;
-                return value;
-            }
+            case JsonValueKind.String:
+                return jsonElement.GetString();
             default:
                 throw new ArgumentOutOfRangeException($"unknown data type: {jsonElement.ValueKind}");
         }
