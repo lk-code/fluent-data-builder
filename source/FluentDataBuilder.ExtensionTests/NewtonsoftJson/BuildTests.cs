@@ -155,15 +155,16 @@ public class BuildTests
     [TestMethod]
     public void LoadFrom_WithSimpleJson_Returns()
     {
-        JObject json = JObject.Parse("{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"],\"object\":{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"]}}");
+        JObject json = JObject.Parse("{\"name\":\"this is a test\",\"number\":123,\"decimal\":123.45,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"],\"object\":{\"name\":\"this is a test\",\"number\":123,\"decimal\":123.45,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"]}}");
         
         IDataBuilder builder = new DataBuilder().LoadFrom(json);
         
         builder.Should().NotBeNull();
         var properties = builder.GetProperties();
-        properties.Count.Should().Be(6);
+        properties.Count.Should().Be(7);
         properties["name"].Should().Be("this is a test");
         properties["number"].Should().Be(123);
+        properties["decimal"].Should().Be((float)123.45);
         properties["boolean"].Should().Be(true);
         properties["null"].Should().BeNull();
         properties["array"].Should().BeOfType<object[]>();
@@ -173,6 +174,7 @@ public class BuildTests
         {
             { "name", "this is a test" },
             { "number", 123 },
+            { "decimal", (float)123.45 },
             { "boolean", true },
             { "null", null! },
             { "array", new List<string> { "this", "is", "a", "test" } }
