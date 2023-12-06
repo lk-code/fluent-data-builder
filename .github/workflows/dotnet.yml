@@ -36,20 +36,6 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore source/
       
-      - name: Version Visual Studio SDK projects
-        uses: roryprimrose/set-vs-sdk-project-version@v1.0.6
-        with:
-          # The wildcard filter that identifies projects to version
-          projectFilter: "**/*.csproj"
-          # Maps to the Version element
-          version: ${{ env.VERSION }}
-          # Maps to the AssemblyVersion element
-          assemblyVersion: ${{ env.VERSION }}
-          # Maps to the FileVersion element
-          fileVersion: ${{ env.VERSION }}
-          # Maps to the InformationalVersion element
-          informationalVersion: ${{ env.VERSION }}
-
       - name: Cache SonarCloud packages
         uses: actions/cache@v3.3.2
         with:
@@ -84,44 +70,50 @@ jobs:
       - name: Build FluentDataBuilder
         shell: pwsh
         run: |
-          dotnet build -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
-          dotnet pack -c Release source/FluentDataBuilder/FluentDataBuilder.csproj /p:PackageVersion=${{ env.VERSION }}
+          dotnet restore source/FluentDataBuilder.Json/FluentDataBuilder.csproj
+          dotnet build --no-restore -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
+          dotnet pack --no-restore -c Release source/FluentDataBuilder/FluentDataBuilder.csproj /p:PackageVersion=${{ env.VERSION }}
 
       - name: Build FluentDataBuilder.Json
         shell: pwsh
         run: |
+          dotnet restore source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
           dotnet add source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
-          dotnet build -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
-          dotnet pack -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj /p:PackageVersion=${{ env.VERSION }}
+          dotnet build --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
+          dotnet pack --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj /p:PackageVersion=${{ env.VERSION }}
           
       - name: Build FluentDataBuilder.NewtonsoftJson
         shell: pwsh
         run: |
-          dotnet add package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
-          dotnet build -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj
-          dotnet pack -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj /p:PackageVersion=${{ env.VERSION }}
+          dotnet restore source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj
+          dotnet add source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
+          dotnet build --no-restore -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj
+          dotnet pack --no-restore -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj /p:PackageVersion=${{ env.VERSION }}
 
       - name: Build FluentDataBuilder.Xml
         shell: pwsh
         run: |
-          dotnet add package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
-          dotnet build -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj
-          dotnet pack -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj /p:PackageVersion=${{ env.VERSION }}
+          dotnet restore source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj
+          dotnet add source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
+          dotnet build --no-restore -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj
+          dotnet pack --no-restore -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj /p:PackageVersion=${{ env.VERSION }}
 
       - name: Build FluentDataBuilder.Yaml
         shell: pwsh
         run: |
-          dotnet add package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
-          dotnet build -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj
-          dotnet pack -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj /p:PackageVersion=${{ env.VERSION }}
+          dotnet restore source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj
+          dotnet add source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
+          dotnet build --no-restore -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj
+          dotnet pack --no-restore -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj /p:PackageVersion=${{ env.VERSION }}
 
       - name: Build FluentDataBuilder.Microsoft.Extensions.Configuration
         shell: pwsh
         run: |
-          dotnet add package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
-          dotnet add package FluentDataBuilder.Json --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder.Json/nupkg
-          dotnet build -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj
-          dotnet pack -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj /p:PackageVersion=${{ env.VERSION }}
+          dotnet restore source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj
+          dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
+          dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder.Json --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder.Json/nupkg
+          dotnet build --no-restore -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj
+          dotnet pack --no-restore -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj /p:PackageVersion=${{ env.VERSION }}
         
       - name: Finish Analyze
         env:
