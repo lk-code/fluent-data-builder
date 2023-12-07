@@ -90,7 +90,22 @@ jobs:
         run: |
           dotnet nuget push source/FluentDataBuilder/nupkg/FluentDataBuilder.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
 
-
+      - name: Wait for NuGet Package
+        id: wait
+        run: |
+          counter=0
+          while [ $counter -lt 10 ]; do
+            result=$(dotnet nuget list source --allversions --prerelease FluentDataBuilder | grep ${{ env.VERSION }})
+          
+            if [ -n "$result" ]; then
+              echo "NuGet-Paket (Version YourPackageVersion) gefunden! Breche die Schleife ab."
+              break
+            fi
+          
+            echo "Warte auf NuGet-Paket (Version YourPackageVersion). Versuch Nummer $((counter + 1))."
+            sleep 60  # Warte 60 Sekunden (kann angepasst werden)
+            counter=$((counter + 1))
+          done
 
       - name: Build FluentDataBuilder.Json
         shell: pwsh
