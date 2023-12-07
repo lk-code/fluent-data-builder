@@ -13,6 +13,7 @@ jobs:
 
     env:
       VERSION: 1.2.${{ github.run_number }}
+      USERNAME: lk-code
 
     steps:
       - name: Set up JDK 17
@@ -67,59 +68,75 @@ jobs:
         run: |
           dotnet-sonarscanner begin /k:"lk-code_fluent-data-builder" /o:"lk-code-github" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
 
+      - name: Initialize GitHub NuGet Provider
+        shell: pwsh
+        run: |
+          dotnet nuget add source --username ${{ env.USERNAME }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ env.VERSION }}/index.json"
+
+
+
       - name: Build FluentDataBuilder
         shell: pwsh
         run: |
-          dotnet restore source/FluentDataBuilder.Json/FluentDataBuilder.csproj
-          dotnet build --no-restore -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
-          dotnet pack --no-restore -c Release source/FluentDataBuilder/FluentDataBuilder.csproj /p:PackageVersion=${{ env.VERSION }}
+          dotnet build -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
+
+      - name: Pack FluentDataBuilder
+        shell: pwsh
+        run: |
+          dotnet pack -c Release source/FluentDataBuilder/FluentDataBuilder.csproj /p:PackageVersion=${{ env.VERSION }}
+
+      - name: Temporary NuGet FluentDataBuilder
+        shell: pwsh
+        run: |
           dotnet nuget push source/FluentDataBuilder/nupkg/FluentDataBuilder.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+
+
 
       - name: Build FluentDataBuilder.Json
         shell: pwsh
         run: |
-          dotnet nuget add source $GITHUB_WORKSPACE/nuget_output
-          dotnet restore source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
           dotnet add source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
           dotnet build --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj /p:PackageVersion=${{ env.VERSION }}
           
+          
+          
       - name: Build FluentDataBuilder.NewtonsoftJson
         shell: pwsh
         run: |
-          dotnet nuget add source $GITHUB_WORKSPACE/nuget_output
-          dotnet restore source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj
           dotnet add source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
           dotnet build --no-restore -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj /p:PackageVersion=${{ env.VERSION }}
 
+
+
       - name: Build FluentDataBuilder.Xml
         shell: pwsh
         run: |
-          dotnet nuget add source $GITHUB_WORKSPACE/nuget_output
-          dotnet restore source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj
           dotnet add source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
           dotnet build --no-restore -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj /p:PackageVersion=${{ env.VERSION }}
 
+
+
       - name: Build FluentDataBuilder.Yaml
         shell: pwsh
         run: |
-          dotnet nuget add source $GITHUB_WORKSPACE/nuget_output
-          dotnet restore source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj
           dotnet add source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
           dotnet build --no-restore -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj /p:PackageVersion=${{ env.VERSION }}
 
+
+
       - name: Build FluentDataBuilder.Microsoft.Extensions.Configuration
         shell: pwsh
         run: |
-          dotnet nuget add source $GITHUB_WORKSPACE/nuget_output
-          dotnet restore source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj
           dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
           dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder.Json --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder.Json/nupkg
           dotnet build --no-restore -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj /p:PackageVersion=${{ env.VERSION }}
+        
+        
         
       - name: Finish Analyze
         env:
