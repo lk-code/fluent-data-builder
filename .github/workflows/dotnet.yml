@@ -5,7 +5,7 @@ on:
     branches:
       - main
   workflow_dispatch:
-  
+
 jobs:
   build:
 
@@ -33,7 +33,7 @@ jobs:
         with:
           java-version: 17
           distribution: 'zulu'
-        
+
       - name: Restore dependencies
         run: dotnet restore source/
 
@@ -51,7 +51,7 @@ jobs:
           path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
           restore-keys: ${{ runner.os }}-sonar-scanner
-        
+
       - name: Install SonarCloud scanner
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: pwsh
@@ -96,11 +96,14 @@ jobs:
           $max = 10
           $sleep = 5
           $url = "https://nuget.pkg.github.com/${{ env.VERSION }}/download/fluentdatabuilder/index.json"
+          $headers = @{
+            "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
+          }
           do {
             $i++
             Write-Host "Waiting for NuGet to publish $url"
             Start-Sleep -Seconds $sleep
-          } while ((Invoke-WebRequest -Uri $url -UseBasicParsing).StatusCode -ne 200 -and $i -lt $max)
+          } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
           if ($i -eq $max) {
             throw "NuGet not published after $max tries"
           }
@@ -112,9 +115,9 @@ jobs:
           dotnet add source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
           dotnet build --no-pack --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj /p:PackageVersion=${{ env.VERSION }}
-          
-          
-          
+
+
+
       - name: Build FluentDataBuilder.NewtonsoftJson
         shell: pwsh
         run: |
@@ -149,9 +152,9 @@ jobs:
           dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder.Json --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder.Json/nupkg
           dotnet build --no-pack --no-restore -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj /p:PackageVersion=${{ env.VERSION }}
-        
-        
-        
+
+
+
       - name: Finish Analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
@@ -164,7 +167,7 @@ jobs:
         run: |
           git tag ${{ env.VERSION }}
           git push origin ${{ env.VERSION }}
-          
+
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v3.1.2
         with:
