@@ -89,7 +89,21 @@ jobs:
         run: |
           dotnet nuget push source/FluentDataBuilder/nupkg/FluentDataBuilder.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
 
-
+      - name: Wait for NuGet Published
+        shell: pwsh
+        run: |
+          $i = 0
+          $max = 10
+          $sleep = 5
+          $url = "https://nuget.pkg.github.com/${{ env.VERSION }}/download/fluentdatabuilder/index.json"
+          do {
+            $i++
+            Write-Host "Waiting for NuGet to publish $url"
+            Start-Sleep -Seconds $sleep
+          } while ((Invoke-WebRequest -Uri $url -UseBasicParsing).StatusCode -ne 200 -and $i -lt $max)
+          if ($i -eq $max) {
+            throw "NuGet not published after $max tries"
+          }
 
 
       - name: Build FluentDataBuilder.Json
