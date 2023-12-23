@@ -77,7 +77,7 @@ jobs:
       - name: Build FluentDataBuilder
         shell: pwsh
         run: |
-          dotnet build --no-pack -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
+          dotnet build -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
 
       - name: Pack FluentDataBuilder
         shell: pwsh
