@@ -109,12 +109,45 @@ jobs:
           }
 
 
+
+      - name: Add NuGets FluentDataBuilder.Json
+        shell: pwsh
+        run: |
+          dotnet add source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj package FluentDataBuilder --version ${{ env.VERSION }}
+
       - name: Build FluentDataBuilder.Json
         shell: pwsh
         run: |
-          dotnet add source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
-          dotnet build --no-pack --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
-          dotnet pack --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj /p:PackageVersion=${{ env.VERSION }}
+          dotnet build -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
+
+      - name: Pack FluentDataBuilder.Json
+        shell: pwsh
+        run: |
+          dotnet pack -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj /p:PackageVersion=${{ env.VERSION }}
+
+      - name: Temporary NuGet FluentDataBuilder.Json
+        shell: pwsh
+        run: |
+          dotnet nuget push source/FluentDataBuilder.Json/nupkg/FluentDataBuilder.Json.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Wait for NuGet Published
+        shell: pwsh
+        run: |
+          $i = 0
+          $max = 10
+          $sleep = 5
+          $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.json/${{ env.VERSION }}.json"
+          $headers = @{
+            "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
+          }
+          do {
+            $i++
+            Write-Host "Waiting for NuGet to publish $url"
+            Start-Sleep -Seconds $sleep
+          } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
+          if ($i -eq $max) {
+            throw "NuGet not published after $max tries"
+          }
 
 
 
