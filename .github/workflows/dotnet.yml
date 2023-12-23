@@ -334,3 +334,6 @@ jobs:
         with:
           name: ${{ env.VERSION }}
           path: "**/*.${{ env.VERSION }}.nupkg"
+
+      - name: Publish
+        run: dotnet nuget push "**/*.${{ env.VERSION }}.nupkg" --no-symbols --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} --source "nuget.org"
