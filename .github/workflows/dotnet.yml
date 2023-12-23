@@ -9,44 +9,44 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     env:
       VERSION: 1.2.${{ github.run_number }}
       USERNAME: lk-code
+      NUGET_FILE: "**/*.nupkg"
 
     steps:
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3.13.0
+
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
-          java-version: 17
-          distribution: 'zulu'
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v2
         with:
           dotnet-version: 8.0.x
-          
-      - uses: actions/checkout@v3
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
         with:
-          fetch-depth: 0
-        
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
+          java-version: 17
+          distribution: 'zulu'
         
       - name: Restore dependencies
         run: dotnet restore source/
-      
+
       - name: Cache SonarCloud packages
-        uses: actions/cache@v3.3.2
+        uses: actions/cache@v3
         with:
           path: ~\sonar\cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
-        
+
       - name: Cache SonarCloud scanner
         id: cache-sonar-scanner
-        uses: actions/cache@v3.3.2
+        uses: actions/cache@v3
         with:
           path: .\.sonar\scanner
           key: ${{ runner.os }}-sonar-scanner
@@ -56,9 +56,8 @@ jobs:
         if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: pwsh
         run: |
-          dotnet tool update -g dotnet-sonarscanner
-          dotnet tool update -g dotnet-reportgenerator-globaltool
-          dotnet tool update -g dotnet-coverage
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
 
       - name: Start Analyze
         env:
@@ -66,7 +65,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: pwsh
         run: |
-          dotnet-sonarscanner begin /k:"lk-code_fluent-data-builder" /o:"lk-code-github" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"lk-code_fluent-data-builder" /o:"lk-code-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
 
       - name: Initialize GitHub NuGet Provider
         shell: pwsh
@@ -78,7 +77,7 @@ jobs:
       - name: Build FluentDataBuilder
         shell: pwsh
         run: |
-          dotnet build -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
+          dotnet build --no-pack -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
 
       - name: Pack FluentDataBuilder
         shell: pwsh
@@ -90,28 +89,14 @@ jobs:
         run: |
           dotnet nuget push source/FluentDataBuilder/nupkg/FluentDataBuilder.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Wait for NuGet Package
-        id: wait
-        run: |
-          counter=0
-          while [ $counter -lt 10 ]; do
-            result=$(dotnet nuget list source --allversions --prerelease FluentDataBuilder | grep ${{ env.VERSION }})
-          
-            if [ -n "$result" ]; then
-              echo "NuGet-Paket (Version YourPackageVersion) gefunden! Breche die Schleife ab."
-              break
-            fi
-          
-            echo "Warte auf NuGet-Paket (Version YourPackageVersion). Versuch Nummer $((counter + 1))."
-            sleep 60  # Warte 60 Sekunden (kann angepasst werden)
-            counter=$((counter + 1))
-          done
+
+
 
       - name: Build FluentDataBuilder.Json
         shell: pwsh
         run: |
           dotnet add source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
-          dotnet build --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
+          dotnet build --no-pack --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj /p:PackageVersion=${{ env.VERSION }}
           
           
@@ -120,7 +105,7 @@ jobs:
         shell: pwsh
         run: |
           dotnet add source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
-          dotnet build --no-restore -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj
+          dotnet build --no-pack --no-restore -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj /p:PackageVersion=${{ env.VERSION }}
 
 
@@ -129,7 +114,7 @@ jobs:
         shell: pwsh
         run: |
           dotnet add source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
-          dotnet build --no-restore -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj
+          dotnet build --no-pack --no-restore -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj /p:PackageVersion=${{ env.VERSION }}
 
 
@@ -138,7 +123,7 @@ jobs:
         shell: pwsh
         run: |
           dotnet add source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
-          dotnet build --no-restore -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj
+          dotnet build --no-pack --no-restore -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj /p:PackageVersion=${{ env.VERSION }}
 
 
@@ -148,7 +133,7 @@ jobs:
         run: |
           dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder/nupkg
           dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder.Json --version ${{ env.VERSION }} --package-directory source/FluentDataBuilder.Json/nupkg
-          dotnet build --no-restore -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj
+          dotnet build --no-pack --no-restore -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj
           dotnet pack --no-restore -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj /p:PackageVersion=${{ env.VERSION }}
         
         
@@ -159,9 +144,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: pwsh
         run: |
-          dotnet-coverage collect "dotnet test" -f xml -o "coverage.xml"
-          reportgenerator "-reports:coverage.xml" "-targetdir:sonarqubecoverage" "-reporttypes:SonarQube"
-          dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
 
       - name: Set Version Git Tag
         run: |
@@ -172,4 +155,4 @@ jobs:
         uses: actions/upload-artifact@v3.1.2
         with:
           name: ${{ env.VERSION }}
-          path: "**/*.nupkg"
+          path: ${{ env.NUGET_FILE }}
