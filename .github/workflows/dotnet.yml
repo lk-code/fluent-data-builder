@@ -70,7 +70,7 @@ jobs:
       - name: Initialize GitHub NuGet Provider
         shell: pwsh
         run: |
-          dotnet nuget add source --username ${{ env.USERNAME }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ env.VERSION }}/index.json"
+          dotnet nuget add source --username ${{ env.USERNAME }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/lk-code/index.json"
 
 
 
@@ -95,7 +95,7 @@ jobs:
           $i = 0
           $max = 10
           $sleep = 5
-          $url = "https://nuget.pkg.github.com/${{ env.VERSION }}/download/fluentdatabuilder/index.json"
+          $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder/${{ env.VERSION }}.json"
           $headers = @{
             "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
           }
