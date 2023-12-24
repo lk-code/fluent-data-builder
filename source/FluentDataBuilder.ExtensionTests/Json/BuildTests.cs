@@ -13,9 +13,8 @@ public class BuildTests
         IDataBuilder builder = new DataBuilder();
 
         builder.Add("id", "7c27a562-d405-4b22-9ade-37503bed6014");
-        var jsonProperty = builder.Add("name", "John Doe");
-
-        var jsonObject = builder.Add("editor", new DataBuilder()
+        builder.Add("name", "John Doe");
+        builder.Add("editor", new DataBuilder()
             .Add("typevalue", "a object")
             .Add("numbervalue", 55865)
             .Add("booleanvalue", true));
@@ -25,9 +24,7 @@ public class BuildTests
         string result = jsonResult.RootElement.GetRawText();
 
         result.Should().NotBeNullOrEmpty();
-        result.Should()
-            .Be(
-                "{\"id\":\"7c27a562-d405-4b22-9ade-37503bed6014\",\"name\":\"John Doe\",\"editor\":{\"typevalue\":\"a object\",\"numbervalue\":55865,\"booleanvalue\":true}}");
+        result.Should().Be("{\"id\":\"7c27a562-d405-4b22-9ade-37503bed6014\",\"name\":\"John Doe\",\"editor\":{\"typevalue\":\"a object\",\"numbervalue\":55865,\"booleanvalue\":true}}");
     }
 
     [TestMethod]
@@ -135,8 +132,15 @@ public class BuildTests
         builder.Add("array",
             new List<object>
             {
-                (int)15.123412341234, (double)15.123412341234, (float)16.123412341234, false, (decimal)9.123412341234,
-                "test", 'x', (long)9876.123412341234, (ulong)9876.123412341234
+                (int)15.123412341234,
+                (double)15.123412341234,
+                (float)16.123412341234,
+                false,
+                (decimal)9.123412341234,
+                "test",
+                'x',
+                (long)9876.123412341234,
+                (ulong)9876.123412341234
             }.ToArray());
 
         JsonDocument jsonResult = builder.Build();
@@ -144,9 +148,7 @@ public class BuildTests
         string result = jsonResult.RootElement.GetRawText();
 
         result.Should().NotBeNullOrEmpty();
-        result.Should()
-            .Be(
-                "{\"name\":\"this is a test\",\"array\":[15,15.123412341234,16.123413,false,9.123412341234,\"test\",\"x\",9876,9876]}");
+        result.Should().Be("{\"name\":\"this is a test\",\"array\":[15,15.123412341234,16.123413,false,9.123412341234,\"test\",\"x\",9876,9876]}");
     }
 
     [TestMethod]
@@ -162,17 +164,44 @@ public class BuildTests
     [TestMethod]
     public void LoadFrom_WithSimpleJson_Returns()
     {
-        string jsonValue =
-            "{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"],\"object\":{\"name\":\"this is a test\",\"number\":123,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"]}}";
+        string jsonValue = """
+                           {
+                             "name": "this is a test",
+                             "number": 123,
+                             "decimal": 123.45,
+                             "boolean": true,
+                             "null": null,
+                             "array": [
+                               "this",
+                               "is",
+                               "a",
+                               "test"
+                             ],
+                             "object": {
+                               "name": "this is a test",
+                               "number": 123,
+                               "decimal": 123.45,
+                               "boolean": true,
+                               "null": null,
+                               "array": [
+                                 "this",
+                                 "is",
+                                 "a",
+                                 "test"
+                               ]
+                             }
+                           }
+                           """;
         JsonDocument json = JsonDocument.Parse(jsonValue);
 
         IDataBuilder builder = new DataBuilder().LoadFrom(json);
 
         builder.Should().NotBeNull();
         var properties = builder.GetProperties();
-        properties.Count.Should().Be(6);
+        properties.Count.Should().Be(7);
         properties["name"].Should().Be("this is a test");
         properties["number"].Should().Be(123);
+        properties["decimal"].Should().Be(123.45);
         properties["boolean"].Should().Be(true);
         properties["null"].Should().BeNull();
         properties["array"].Should().BeOfType<object[]>();
@@ -182,6 +211,7 @@ public class BuildTests
         {
             { "name", "this is a test" },
             { "number", 123 },
+            { "decimal", 123.45 },
             { "boolean", true },
             { "null", null! },
             { "array", new List<string> { "this", "is", "a", "test" } }
@@ -203,7 +233,34 @@ public class BuildTests
     {
         IDataBuilder builder = new DataBuilder()
             .LoadFrom(
-                "{\"name\":\"this is a test\",\"number\":123,\"decimal\":123.45,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"],\"object\":{\"name\":\"this is a test\",\"number\":123,\"decimal\":123.45,\"boolean\":true,\"null\":null,\"array\":[\"this\",\"is\",\"a\",\"test\"]}}");
+                """
+                {
+                  "name": "this is a test",
+                  "number": 123,
+                  "decimal": 123.45,
+                  "boolean": true,
+                  "null": null,
+                  "array": [
+                    "this",
+                    "is",
+                    "a",
+                    "test"
+                  ],
+                  "object": {
+                    "name": "this is a test",
+                    "number": 123,
+                    "decimal": 123.45,
+                    "boolean": true,
+                    "null": null,
+                    "array": [
+                      "this",
+                      "is",
+                      "a",
+                      "test"
+                    ]
+                  }
+                }
+                """);
 
         builder.Should().NotBeNull();
         var properties = builder.GetProperties();
@@ -231,8 +288,25 @@ public class BuildTests
     public void LoadFrom_WithSpecificDataObjectFromString_Returns()
     {
         IDataBuilder builder = new DataBuilder()
-            .LoadFrom(
-                "{\"Title\":\"Section Page\",\"Website\":{\"Author\":\"htmlc\"},\"Names\":[{\"Name\":\"Max\"},{\"Name\":\"Lisa\"},{\"Name\":\"Fred\"}]}");
+            .LoadFrom("""
+                      {
+                        "Title": "Section Page",
+                        "Website": {
+                          "Author": "htmlc"
+                        },
+                        "Names": [
+                          {
+                            "Name": "Max"
+                          },
+                          {
+                            "Name": "Lisa"
+                          },
+                          {
+                            "Name": "Fred"
+                          }
+                        ]
+                      }
+                      """);
 
         builder.Should().NotBeNull();
         var properties = builder.GetProperties();
