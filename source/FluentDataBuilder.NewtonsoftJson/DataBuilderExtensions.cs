@@ -39,58 +39,72 @@ public static class DataBuilderExtensions
             return builder;
         }
 
-        builder = json.Properties().Aggregate(builder, ConvertToIDataBuilder);
+        builder = json
+            .Properties()
+            .Aggregate(builder, (currentBuilder, jsonProperty) => ConvertToIDataBuilder(currentBuilder, jsonProperty.Name, jsonProperty.Value));
 
         return builder;
     }
 
-    private static IDataBuilder ConvertToIDataBuilder(IDataBuilder builder, JProperty jsonProperty)
+    /// <summary>
+    /// Loads data into an IDataBuilder object from a JSON string.
+    /// </summary>
+    /// <param name="builder">The IDataBuilder object to load data into.</param>
+    /// <param name="json">A JSON string containing the data to load into the IDataBuilder object.</param>
+    /// <returns>The IDataBuilder object with data loaded from the JSON string.</returns>
+    /// <remarks>
+    /// This method parses the input JSON string into a JsonDocument and then iterates over the properties of the JsonDocument's root element.
+    /// For each property, it converts the property into IDataBuilder properties and updates the builder accordingly.
+    /// </remarks>
+    public static IDataBuilder LoadFrom(this IDataBuilder builder, string json)
     {
-        switch (jsonProperty.Value.Type)
+        if (string.IsNullOrEmpty(json))
+        {
+            return builder;
+        }
+
+        builder = LoadFrom(builder, JObject.Parse(json));
+        
+        return builder;
+    }
+
+    private static IDataBuilder ConvertToIDataBuilder(IDataBuilder builder, string key, JToken json)
+    {
+        builder.Add(key, GetJsonNode(json));
+
+        return builder;
+    }
+
+    private static object? GetJsonNode(JToken jtoken)
+    {
+        switch (jtoken.Type)
         {
             case JTokenType.Null:
-                builder.Add(jsonProperty.Name, (object?)null);
-                break;
+                return null;
             case JTokenType.Object:
-                builder.Add(jsonProperty.Name, ConvertJObjectToDataBuilder(jsonProperty.Value));
-                break;
+                return new DataBuilder()
+                    .LoadFrom((JObject)jtoken)
+                    .GetProperties();
             case JTokenType.Array:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<List<string>>()!);
-                break;
+                return jtoken.Children()
+                    .Select(GetJsonNode)
+                    .ToArray();
             case JTokenType.Integer:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<int>());
-                break;
+                return jtoken.ToObject<int>();
             case JTokenType.Float:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<float>());
-                break;
+                return jtoken.ToObject<float>();
             case JTokenType.Boolean:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<bool>());
-                break;
+                return jtoken.ToObject<bool>();
             case JTokenType.Guid:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.ToObject<Guid>());
-                break;
+                return jtoken.ToObject<Guid>();
             case JTokenType.Undefined:
             case JTokenType.Date:
             case JTokenType.Raw:
             case JTokenType.String:
             case JTokenType.Uri:
-                builder.Add(jsonProperty.Name, jsonProperty.Value.ToString());
-                break;
+                return jtoken.ToString();
             default:
                 throw new ArgumentOutOfRangeException();
         }
-
-        return builder;
-    }
-
-    private static IDataBuilder ConvertJObjectToDataBuilder(JToken jToken)
-    {
-        var dataBuilder = new DataBuilder();
-        foreach (var property in jToken.Children<JProperty>())
-        {
-            ConvertToIDataBuilder(dataBuilder, property);
-        }
-
-        return dataBuilder;
     }
 }

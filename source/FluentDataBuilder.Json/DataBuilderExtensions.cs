@@ -46,9 +46,7 @@ public static class DataBuilderExtensions
 
         return json.RootElement
             .EnumerateObject()
-            .Aggregate(builder,
-                (currentBuilder, jsonProperty) =>
-                    ConvertToIDataBuilder(currentBuilder, jsonProperty.Name, jsonProperty.Value));
+            .Aggregate(builder, (currentBuilder, jsonProperty) => ConvertToIDataBuilder(currentBuilder, jsonProperty.Name, jsonProperty.Value));
     }
 
     /// <summary>
@@ -112,9 +110,11 @@ public static class DataBuilderExtensions
         switch (jsonElement.ValueKind)
         {
             case JsonValueKind.Null:
-                return (object?)null;
+                return null;
             case JsonValueKind.Object:
-                return new DataBuilder().LoadFrom(jsonElement).GetProperties();
+                return new DataBuilder()
+                    .LoadFrom(jsonElement)
+                    .GetProperties();
             case JsonValueKind.Array:
                 return jsonElement.EnumerateArray()
                     .Select(GetJsonNode)
