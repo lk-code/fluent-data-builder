@@ -63,9 +63,7 @@ public static class DataBuilderExtensions
     {
         builder = json
             .EnumerateObject()
-            .Aggregate(builder,
-                (currentBuilder, jsonProperty) =>
-                    ConvertToIDataBuilder(currentBuilder, jsonProperty.Name, jsonProperty.Value));
+            .Aggregate(builder, (currentBuilder, jsonProperty) => ConvertToIDataBuilder(currentBuilder, jsonProperty.Name, jsonProperty.Value));
 
         return builder;
     }
@@ -91,14 +89,16 @@ public static class DataBuilderExtensions
 
         builder = jsonDocument.RootElement
             .EnumerateObject()
-            .Aggregate(builder,
-                (currentBuilder, jsonProperty) =>
-                    ConvertToIDataBuilder(currentBuilder, jsonProperty.Name, jsonProperty.Value));
+            .Aggregate(builder, (currentBuilder, jsonProperty) => ConvertToIDataBuilder(currentBuilder,
+                jsonProperty.Name,
+                jsonProperty.Value));
 
         return builder;
     }
 
-    private static IDataBuilder ConvertToIDataBuilder(IDataBuilder builder, string key, JsonElement jsonElement)
+    private static IDataBuilder ConvertToIDataBuilder(IDataBuilder builder,
+        string key,
+        JsonElement jsonElement)
     {
         builder.Add(key, GetJsonNode(jsonElement));
 

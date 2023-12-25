@@ -18,7 +18,7 @@ public static class DataBuilderExtensions
     /// </remarks>
     public static XmlDocument Build(this IDataBuilder builder)
     {
-        XmlDocument xmlDocument = new XmlDocument();
+        XmlDocument xmlDocument = new();
         XmlElement rootElement = xmlDocument.CreateElement("Root");
         xmlDocument.AppendChild(rootElement);
 
@@ -27,7 +27,8 @@ public static class DataBuilderExtensions
         return xmlDocument;
     }
 
-    private static void CreateXmlElements(Dictionary<string, object> data, XmlElement parentElement,
+    private static void CreateXmlElements(Dictionary<string, object> data, 
+        XmlElement parentElement,
         XmlDocument xmlDocument)
     {
         foreach (KeyValuePair<string, object> entry in data)
@@ -75,6 +76,65 @@ public static class DataBuilderExtensions
             }
 
             parentElement.AppendChild(element);
+        }
+    }
+
+    /// <summary>
+    /// Loads data into an IDataBuilder object from a JsonDocument.
+    /// </summary>
+    /// <param name="builder">The IDataBuilder object to load data into.</param>
+    /// <param name="json">The JsonDocument containing the data to load into the IDataBuilder object.</param>
+    /// <returns>The IDataBuilder object with data loaded from the JsonDocument.</returns>
+    /// <remarks>
+    /// This method loads data into the IDataBuilder object from the provided JsonDocument.
+    /// If the JsonDocument is null, the method returns the original builder unchanged.
+    /// The method uses an aggregation to iterate over the properties of the JsonDocument's root element and
+    /// convert each property into IDataBuilder properties, updating the builder.
+    /// </remarks>
+    public static IDataBuilder LoadFrom(this IDataBuilder builder, XmlDocument xmlDocument)
+    {
+        if (xmlDocument is null)
+        {
+            return builder;
+        }
+        
+        foreach (XmlNode childNode in xmlDocument.ChildNodes)
+        {
+            childNode.ChildNodes
+                .OfType<XmlElement>()
+                .Aggregate(builder, (currentBuilder, xmlElement) => ConvertToIDataBuilder(currentBuilder, xmlElement.Name, xmlElement));
+
+        }
+
+        return builder;
+    }
+
+    private static IDataBuilder ConvertToIDataBuilder(IDataBuilder builder,
+        string key,
+        XmlElement xmlElement)
+    {
+        builder.Add(key, GetXmlNode(xmlElement));
+        
+        return builder;
+    }
+
+    private static object? GetXmlNode(XmlElement xmlElement)
+    {
+        switch (xmlElement.NodeType)
+        {
+            case XmlNodeType.Text:
+                return xmlElement.InnerText;
+            case XmlNodeType.Element:
+                return xmlElement.InnerText;
+            case XmlNodeType.None:
+                return null;
+            // case XmlNodeType.Element:
+            // case XmlNodeType.Document:
+            //     return new DataBuilder()
+            //         .LoadFrom(xmlElement)
+            //         .GetProperties();
+            default:
+                throw new ArgumentOutOfRangeException($"unknown data type: {xmlElement.NodeType}");
         }
     }
 }
