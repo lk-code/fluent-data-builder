@@ -20,4 +20,29 @@ public static class DataBuilderExtensions
 
         return yaml;
     }
+
+    /// <summary>
+    /// Loads data into an IDataBuilder object from a JSON string.
+    /// </summary>
+    /// <param name="builder">The IDataBuilder object to load data into.</param>
+    /// <param name="json">A JSON string containing the data to load into the IDataBuilder object.</param>
+    /// <returns>The IDataBuilder object with data loaded from the JSON string.</returns>
+    /// <remarks>
+    /// This method parses the input JSON string into a JsonDocument and then iterates over the properties of the JsonDocument's root element.
+    /// For each property, it converts the property into IDataBuilder properties and updates the builder accordingly.
+    /// </remarks>
+    public static IDataBuilder LoadFrom(this IDataBuilder builder,
+        string yaml)
+    {
+        if (string.IsNullOrEmpty(yaml))
+        {
+            return builder;
+        }
+
+        ar deserializer = new DeserializerBuilder().Build();
+        var result = deserializer.Deserialize<Dictionary<string, object>>(yamlString);
+
+
+        return builder;
+    }
 }
