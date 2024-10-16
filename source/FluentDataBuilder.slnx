@@ -1,0 +1,26 @@
+﻿<Solution>
+  <Folder Name="/Core/">
+    <Project Path="FluentDataBuilder.Tests\FluentDataBuilder.Tests.csproj" Type="Classic C#" />
+    <Project Path="FluentDataBuilder\FluentDataBuilder.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/Extensions/">
+    <Project Path="FluentDataBuilder.ExtensionTests\FluentDataBuilder.ExtensionTests.csproj" Type="Classic C#" />
+    <Project Path="FluentDataBuilder.Json\FluentDataBuilder.Json.csproj" Type="Classic C#" />
+    <Project Path="FluentDataBuilder.NewtonsoftJson\FluentDataBuilder.NewtonsoftJson.csproj" Type="Classic C#" />
+    <Project Path="FluentDataBuilder.Xml\FluentDataBuilder.Xml.csproj" Type="Classic C#" />
+    <Project Path="FluentDataBuilder.Yaml\FluentDataBuilder.Yaml.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/Microsoft.Extensions.Configuration/">
+    <Project Path="FluentDataBuilder.Microsoft.Extensions.Configuration.Tests\FluentDataBuilder.Microsoft.Extensions.Configuration.Tests.csproj" Type="Classic C#" />
+    <Project Path="FluentDataBuilder.Microsoft.Extensions.Configuration\FluentDataBuilder.Microsoft.Extensions.Configuration.csproj" Type="Classic C#" />
+  </Folder>
+  <Folder Name="/Solution/">
+    <File Path="..\LICENSE" />
+    <File Path="..\README.md" />
+    <File Path="..\.gitignore" />
+  </Folder>
+  <Folder Name="/Solution/workflows/">
+    <File Path="..\.github\workflows\dotnet.yml" />
+    <File Path="..\.github\workflows\pull-request.yml" />
+  </Folder>
+</Solution>
