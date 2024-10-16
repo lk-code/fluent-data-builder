@@ -12,7 +12,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      VERSION: 1.2.${{ github.run_number }}
+      VERSION: 8.0.${{ github.run_number }}
       USERNAME: lk-code
       NUGET_FILE: "**/*.nupkg"
 

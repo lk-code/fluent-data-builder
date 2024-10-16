@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
 
@@ -24,7 +24,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentDataBuilder" Version="1.2.106" />
+      <PackageReference Include="FluentDataBuilder" Version="1.2.107" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
