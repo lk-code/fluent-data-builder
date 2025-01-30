@@ -28,7 +28,7 @@ public static class DictionaryExtensions
                     mergedDictionary[key] = value;
                 }
             }
-            else if (value is Dictionary<string, object> dictionaryValue)
+            else if (value is Dictionary<string, object?> dictionaryValue)
             {
                 if (mergedDictionary[key] is Dictionary<string, object?> leftDictionaryValue)
                 {

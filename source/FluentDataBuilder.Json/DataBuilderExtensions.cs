@@ -158,7 +158,6 @@ public static class DataBuilderExtensions
 
                 throw new ArgumentOutOfRangeException($"unknown numeric data type: {jsonElement.ValueKind}");
             }
-                break;
             case JsonValueKind.True:
                 return true;
             case JsonValueKind.False:
