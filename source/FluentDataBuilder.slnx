@@ -14,6 +14,9 @@
     <Project Path="FluentDataBuilder.Microsoft.Extensions.Configuration.Tests\FluentDataBuilder.Microsoft.Extensions.Configuration.Tests.csproj" Type="Classic C#" />
     <Project Path="FluentDataBuilder.Microsoft.Extensions.Configuration\FluentDataBuilder.Microsoft.Extensions.Configuration.csproj" Type="Classic C#" />
   </Folder>
+  <Folder Name="/Shared/">
+    <Project Path="FluentDataBuilder.TestsShared\FluentDataBuilder.TestsShared.csproj" Type="Classic C#" />
+  </Folder>
   <Folder Name="/Solution/">
     <File Path="..\LICENSE" />
     <File Path="..\README.md" />
