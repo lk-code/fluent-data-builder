@@ -1,6 +1,6 @@
 # FluentDataBuilder
 
-![html-compiler-tool](https://raw.githubusercontent.com/lk-code/fluent-data-builder/main/icon_128.png)
+![fluent-data-builder](https://raw.githubusercontent.com/lk-code/fluent-data-builder/main/icon_128.png)
 
 [![License](https://img.shields.io/github/license/lk-code/fluent-data-builder.svg?style=flat-square)](https://github.com/lk-code/fluent-data-builder/blob/master/LICENSE)
 [![Downloads](https://img.shields.io/nuget/dt/FluentDataBuilder.svg?style=flat-square)](https://www.nuget.org/packages/FluentDataBuilder/)

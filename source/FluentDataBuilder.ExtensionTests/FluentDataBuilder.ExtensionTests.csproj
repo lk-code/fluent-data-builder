@@ -9,19 +9,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" Version="6.12.1" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-        <PackageReference Include="MSTest.TestAdapter" Version="3.7.3" />
-        <PackageReference Include="MSTest.TestFramework" Version="3.7.3" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
+        <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
+        <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
         <PackageReference Include="coverlet.collector" Version="6.0.4">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Shouldly" Version="4.3.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\FluentDataBuilder.Json\FluentDataBuilder.Json.csproj"/>
         <ProjectReference Include="..\FluentDataBuilder.NewtonsoftJson\FluentDataBuilder.NewtonsoftJson.csproj"/>
+        <ProjectReference Include="..\FluentDataBuilder.TestsShared\FluentDataBuilder.TestsShared.csproj" />
         <ProjectReference Include="..\FluentDataBuilder.Xml\FluentDataBuilder.Xml.csproj"/>
         <ProjectReference Include="..\FluentDataBuilder.Yaml\FluentDataBuilder.Yaml.csproj" />
     </ItemGroup>

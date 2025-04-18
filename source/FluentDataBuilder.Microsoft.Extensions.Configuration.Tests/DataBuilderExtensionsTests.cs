@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -14,12 +14,12 @@ public class DataBuilderExtensionsTests
 
         builder.Add("Tests", new DataBuilder()
             .Add("Id", "7c27a562-d405-4b22-9ade-37503bed6014"));
-        
+
         IConfiguration configuration = builder.ToConfiguration();
 
         string value = configuration.GetSection("Tests:Id").Get<string>()!;
 
-        value.Should().NotBeNullOrEmpty();
-        value.Should().Be("7c27a562-d405-4b22-9ade-37503bed6014");
+        value.ShouldNotBeNullOrEmpty();
+        value.ShouldBe("7c27a562-d405-4b22-9ade-37503bed6014");
     }
 }

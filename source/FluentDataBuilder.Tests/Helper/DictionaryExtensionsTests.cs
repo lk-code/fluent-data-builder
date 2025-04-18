@@ -1,4 +1,4 @@
-using FluentAssertions;
+using Shouldly;
 using FluentDataBuilder.Helper;
 
 namespace FluentDataBuilder.Tests.Helper;
@@ -11,44 +11,44 @@ public class DictionaryExtensionsTests
     {
         Dictionary<string, object?> left = new()
         {
-            {"id", "7c27a562-d405-4b22-9ade-37503bed6014"}
+            { "id", "7c27a562-d405-4b22-9ade-37503bed6014" }
         };
         Dictionary<string, object?> right = new()
         {
-            {"name", "John Doe"}
+            { "name", "John Doe" }
         };
-        
+
         var mergedDictionary = left.MergeDictionaries(right);
-        mergedDictionary.Should().NotBeNull();
-        mergedDictionary.Should().HaveCount(2);
-        mergedDictionary.Should().ContainKey("id");
-        mergedDictionary.Should().ContainKey("name");
-        mergedDictionary["id"].Should().Be("7c27a562-d405-4b22-9ade-37503bed6014");
-        mergedDictionary["name"].Should().Be("John Doe");
+        mergedDictionary.ShouldNotBeNull();
+        mergedDictionary.Count.ShouldBe(2);
+        mergedDictionary.ShouldContainKey("id");
+        mergedDictionary.ShouldContainKey("name");
+        mergedDictionary["id"].ShouldBe("7c27a562-d405-4b22-9ade-37503bed6014");
+        mergedDictionary["name"].ShouldBe("John Doe");
     }
-    
+
     [TestMethod]
     public void MergeDictionaries_WithOverlappingEntries_Returns()
     {
         Dictionary<string, object?> left = new()
         {
-            {"id", "7c27a562-d405-4b22-9ade-37503bed6014"},
-            {"username", "uname"}
+            { "id", "7c27a562-d405-4b22-9ade-37503bed6014" },
+            { "username", "uname" }
         };
         Dictionary<string, object?> right = new()
         {
-            {"name", "John Doe"},
-            {"username", "jdoe"}
+            { "name", "John Doe" },
+            { "username", "jdoe" }
         };
-        
+
         var mergedDictionary = left.MergeDictionaries(right);
-        mergedDictionary.Should().NotBeNull();
-        mergedDictionary.Should().HaveCount(3);
-        mergedDictionary.Should().ContainKey("id");
-        mergedDictionary.Should().ContainKey("name");
-        mergedDictionary.Should().ContainKey("username");
-        mergedDictionary["id"].Should().Be("7c27a562-d405-4b22-9ade-37503bed6014");
-        mergedDictionary["name"].Should().Be("John Doe");
-        mergedDictionary["username"].Should().Be("jdoe");
+        mergedDictionary.ShouldNotBeNull();
+        mergedDictionary.Count.ShouldBe(3);
+        mergedDictionary.ShouldContainKey("id");
+        mergedDictionary.ShouldContainKey("name");
+        mergedDictionary.ShouldContainKey("username");
+        mergedDictionary["id"].ShouldBe("7c27a562-d405-4b22-9ade-37503bed6014");
+        mergedDictionary["name"].ShouldBe("John Doe");
+        mergedDictionary["username"].ShouldBe("jdoe");
     }
 }

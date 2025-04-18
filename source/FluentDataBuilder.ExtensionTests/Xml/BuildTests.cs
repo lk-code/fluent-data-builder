@@ -1,5 +1,5 @@
 using System.Xml;
-using FluentAssertions;
+using Shouldly;
 using FluentDataBuilder.Xml;
 
 namespace FluentDataBuilder.ExtensionTests.Xml;
@@ -24,8 +24,8 @@ public class BuildTests
 
         string result = xmlDocument.OuterXml;
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().Be("<Root><id>7c27a562-d405-4b22-9ade-37503bed6014</id><name>John Doe</name><editor><typevalue>a object</typevalue><numbervalue>55865</numbervalue><booleanvalue>True</booleanvalue></editor></Root>");
+        result.ShouldNotBeNullOrEmpty();
+        result.ShouldBe("<Root><id>7c27a562-d405-4b22-9ade-37503bed6014</id><name>John Doe</name><editor><typevalue>a object</typevalue><numbervalue>55865</numbervalue><booleanvalue>True</booleanvalue></editor></Root>");
     }
 
     [TestMethod]
@@ -40,8 +40,8 @@ public class BuildTests
 
         string result = xmlDocument.OuterXml;
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().Be("<Root><name>this is a test</name><number>123</number></Root>");
+        result.ShouldNotBeNullOrEmpty();
+        result.ShouldBe("<Root><name>this is a test</name><number>123</number></Root>");
     }
 
     [TestMethod]
@@ -56,8 +56,8 @@ public class BuildTests
 
         string result = xmlDocument.OuterXml;
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().Be("<Root><name>this is a test</name><array><Item>this</Item><Item>is</Item><Item>a</Item><Item>test</Item></array></Root>");
+        result.ShouldNotBeNullOrEmpty();
+        result.ShouldBe("<Root><name>this is a test</name><array><Item>this</Item><Item>is</Item><Item>a</Item><Item>test</Item></array></Root>");
     }
 
     [TestMethod]
@@ -72,8 +72,8 @@ public class BuildTests
 
         string result = xmlDocument.OuterXml;
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().Be("<Root><name>this is a test</name><array><Item>this</Item><Item>is</Item><Item>a</Item><Item>test</Item></array></Root>");
+        result.ShouldNotBeNullOrEmpty();
+        result.ShouldBe("<Root><name>this is a test</name><array><Item>this</Item><Item>is</Item><Item>a</Item><Item>test</Item></array></Root>");
     }
 
     [TestMethod]
@@ -88,8 +88,8 @@ public class BuildTests
 
         string result = xmlDocument.OuterXml;
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().Be("<Root><name>this is a test</name><array><Item>this</Item><Item>123</Item><Item>True</Item><Item>456.78</Item></array></Root>");
+        result.ShouldNotBeNullOrEmpty();
+        result.ShouldBe("<Root><name>this is a test</name><array><Item>this</Item><Item>123</Item><Item>True</Item><Item>456.78</Item></array></Root>");
     }
 
     [TestMethod]
@@ -104,8 +104,8 @@ public class BuildTests
 
         string result = xmlDocument.OuterXml;
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().Be("<Root><name>this is a test</name><array><Item>12</Item><Item>34</Item><Item>56</Item><Item>78</Item></array></Root>");
+        result.ShouldNotBeNullOrEmpty();
+        result.ShouldBe("<Root><name>this is a test</name><array><Item>12</Item><Item>34</Item><Item>56</Item><Item>78</Item></array></Root>");
     }
 
     [TestMethod]
@@ -120,8 +120,8 @@ public class BuildTests
 
         string result = xmlDocument.OuterXml;
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().Be("<Root><name>this is a test</name><array><Item>12.34</Item><Item>34</Item><Item>56.78</Item><Item>78.901</Item></array></Root>");
+        result.ShouldNotBeNullOrEmpty();
+        result.ShouldBe("<Root><name>this is a test</name><array><Item>12.34</Item><Item>34</Item><Item>56.78</Item><Item>78.901</Item></array></Root>");
     }
 
     [TestMethod]
@@ -136,7 +136,7 @@ public class BuildTests
 
         string result = xmlDocument.OuterXml;
 
-        result.Should().NotBeNullOrEmpty();
-        result.Should().Be("<Root><name>this is a test</name><array><Item>15</Item><Item>15.123412341234</Item><Item>16.123413</Item><Item>False</Item><Item>9.123412341234</Item><Item>test</Item><Item>x</Item><Item>9876</Item><Item>9876</Item></array></Root>");
+        result.ShouldNotBeNullOrEmpty();
+        result.ShouldBe("<Root><name>this is a test</name><array><Item>15</Item><Item>15.123412341234</Item><Item>16.123413</Item><Item>False</Item><Item>9.123412341234</Item><Item>test</Item><Item>x</Item><Item>9876</Item><Item>9876</Item></array></Root>");
     }
 }
