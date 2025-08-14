@@ -24,11 +24,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentDataBuilder" Version="8.0.113" />
-        <PackageReference Include="FluentDataBuilder.Json" Version="8.0.113" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
+        <PackageReference Include="FluentDataBuilder" Version="8.0.114" />
+        <PackageReference Include="FluentDataBuilder.Json" Version="8.0.114" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.8" />
     </ItemGroup>
 
     <ItemGroup>
