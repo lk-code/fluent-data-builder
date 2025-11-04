@@ -1,0 +1,25 @@
+version: 2
+
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/source"
+    schedule:
+      interval: "daily"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "nuget"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+    rebase-strategy: "auto"
+    allow:
+      - dependency-type: "all"
+    ignore:
+      # Optional: bestimme Pakete, die nie automatisch geupdatet werden sollen
+      # - dependency-name: "Microsoft.NET.Test.Sdk"
+      # - dependency-name: "coverlet.collector"
+    reviewers:
+      - "lk-code" # optional: GitHub-Nutzername oder Team
