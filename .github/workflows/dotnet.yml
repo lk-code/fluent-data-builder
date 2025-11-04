@@ -8,6 +8,7 @@ on:
 
 env:
  DOTNET_VERSION: "8.0.x"
+ PROJECT_FILE: "source/FluentDataBuilder.sln"
  VERSION: 8.0.${{ github.run_number }}
  USERNAME: lk-code
  NUGET_FILE: "**/*.nupkg"
@@ -46,7 +47,7 @@ jobs:
       dotnet tool install --global dotnet-coverage
 
    - name: Restore dependencies
-     run: dotnet restore source/
+     run: dotnet restore ${{ env.PROJECT_FILE }}
 
    - name: Begin SonarQube
      shell: pwsh

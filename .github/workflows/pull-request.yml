@@ -6,6 +6,7 @@ on:
 
 env:
  DOTNET_VERSION: "8.0.x"
+ PROJECT_FILE: "source/FluentDataBuilder.sln"
 
 jobs:
  pull-request-check:
@@ -25,7 +26,7 @@ jobs:
       dotnet-version: ${{ env.DOTNET_VERSION }}
 
    - name: Restore dependencies
-     run: dotnet restore source/
+     run: dotnet restore ${{ env.PROJECT_FILE }}
 
    - name: Build and analyze
      shell: pwsh
