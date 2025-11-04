@@ -1,30 +1,35 @@
 name: Pull Request
 
 on:
-  pull_request:
-    branches: [ "main" ]
-    
+ pull_request:
+  branches: [ "main" ]
+
+env:
+ DOTNET_VERSION: "8.0.x"
+ PROJECT_FILE: "source/FluentDataBuilder.sln"
+
 jobs:
-  pull-request-check:
+ pull-request-check:
+  
+  runs-on: ubuntu-latest
+  
+  steps:
 
-    runs-on: ubuntu-latest
+   - name: Checkout repository
+     uses: actions/checkout@v4.1.1
+     with:
+      fetch-depth: 0
 
-    steps:
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 8.0.x
-          
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        
-    - name: Restore dependencies
-      run: dotnet restore source/
-      
-    - name: Build and analyze
-      shell: pwsh
-      run: |
-        dotnet build --configuration Release --no-restore source/
-        dotnet test source/
+   - name: Setup .NET
+     uses: actions/setup-dotnet@v4
+     with:
+      dotnet-version: ${{ env.DOTNET_VERSION }}
+
+   - name: Restore dependencies
+     run: dotnet restore ${{ env.PROJECT_FILE }}
+
+   - name: Build and analyze
+     shell: pwsh
+     run: |
+      dotnet build --configuration Release --no-restore ${{ env.PROJECT_FILE }}
+      dotnet test ${{ env.PROJECT_FILE }}

@@ -21,6 +21,8 @@
     <File Path="..\LICENSE" />
     <File Path="..\README.md" />
     <File Path="..\.gitignore" />
+    <File Path="..\.github\dependabot.yml" />
+    <File Path="..\.github\FUNDING.yml" />
   </Folder>
   <Folder Name="/Solution/workflows/">
     <File Path="..\.github\workflows\dotnet.yml" />
