@@ -31,5 +31,5 @@ jobs:
    - name: Build and analyze
      shell: pwsh
      run: |
-      dotnet build --configuration Release --no-restore source/
-      dotnet test source/
+      dotnet build --configuration Release --no-restore ${{ env.PROJECT_FILE }}
+      dotnet test ${{ env.PROJECT_FILE }}
