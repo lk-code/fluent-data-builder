@@ -64,12 +64,12 @@ jobs:
    - name: .NET Build
      shell: pwsh
      run: |
-      dotnet build --no-restore
+      dotnet build --no-restore ${{ env.PROJECT_FILE }}
 
    - name: Collect Test Coverage
      shell: pwsh
      run: |
-      dotnet-coverage collect "dotnet test ${{ env.UNIT_TEST_CSPROJ }} --no-build" -f xml -o "coverage.xml"
+      dotnet-coverage collect "dotnet test ${{ env.PROJECT_FILE }} --no-build" -f xml -o "coverage.xml"
 
 
 
