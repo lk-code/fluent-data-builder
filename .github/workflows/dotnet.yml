@@ -1,337 +1,343 @@
 name: .NET Build
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+ push:
+  branches:
+   - main
+ workflow_dispatch:
+
+env:
+ DOTNET_VERSION: "8.0.x"
+ VERSION: 8.0.${{ github.run_number }}
+ USERNAME: lk-code
+ NUGET_FILE: "**/*.nupkg"
 
 jobs:
-  build:
+ build:
+  
+  runs-on: windows-latest
+  
+  steps:
 
-    runs-on: windows-latest
+   - name: Checkout repository
+     uses: actions/checkout@v4.1.1
 
-    env:
-      VERSION: 8.0.${{ github.run_number }}
-      USERNAME: lk-code
-      NUGET_FILE: "**/*.nupkg"
+   - name: Set up JDK 17
+     uses: actions/setup-java@v4
+     with:
+      java-version: 17
+      distribution: 'zulu'
 
-    steps:
+   - name: Setup .NET
+     uses: actions/setup-dotnet@v4
+     with:
+      dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Checkout repository
-        uses: actions/checkout@v4.1.1
+   - name: Install SonarQube Cloud scanner
+     run: |
+      dotnet tool install --global dotnet-sonarscanner
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: 8.0.x
+   - name: Install ReportGenerator
+     run: |
+      dotnet tool install --global dotnet-reportgenerator-globaltool
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: 'zulu'
+   - name: Install .NET Coverage
+     run: |
+      dotnet tool install --global dotnet-coverage
 
-      - name: Restore dependencies
-        run: dotnet restore source/
+   - name: Restore dependencies
+     run: dotnet restore source/
 
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
+   - name: Begin SonarQube
+     shell: pwsh
+     env:
+      SONARTOKEN: ${{ secrets.SONAR_TOKEN }}
+     run: |
+      dotnet-sonarscanner begin `
+        /k:"lk-code_fluent-data-builder" `
+        /o:"lk-code-github" `
+        /d:sonar.token="$env:SONARTOKEN" `
+        /d:sonar.host.url="https://sonarcloud.io" `
+        /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml `
 
-      - name: Cache SonarCloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@v3
-        with:
-          path: .\.sonar\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
+   - name: .NET Build
+     shell: pwsh
+     run: |
+      dotnet build --no-restore
 
-      - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
-        shell: pwsh
-        run: |
-          New-Item -Path .\.sonar\scanner -ItemType Directory
-          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
-
-      - name: Start Analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: pwsh
-        run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"lk-code_fluent-data-builder" /o:"lk-code-github" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io"
-
-      - name: Initialize GitHub NuGet Provider
-        shell: pwsh
-        run: |
-          dotnet nuget add source --username ${{ env.USERNAME }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/lk-code/index.json"
+   - name: Collect Test Coverage
+     shell: pwsh
+     run: |
+      dotnet-coverage collect "dotnet test ${{ env.UNIT_TEST_CSPROJ }} --no-build" -f xml -o "coverage.xml"
 
 
 
-      - name: Build FluentDataBuilder
-        shell: pwsh
-        run: |
-          dotnet build -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
-
-      - name: Pack FluentDataBuilder
-        shell: pwsh
-        run: |
-          dotnet pack -c Release source/FluentDataBuilder/FluentDataBuilder.csproj /p:PackageVersion=${{ env.VERSION }}
-
-      - name: Temporary NuGet FluentDataBuilder
-        shell: pwsh
-        run: |
-          dotnet nuget push source/FluentDataBuilder/nupkg/FluentDataBuilder.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Wait for FluentDataBuilder Published
-        shell: pwsh
-        run: |
-          $i = 0
-          $max = 10
-          $sleep = 5
-          $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder/${{ env.VERSION }}.json"
-          $headers = @{
-            "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
-          }
-          do {
-            $i++
-            Write-Host "Waiting for NuGet to publish $url"
-            Start-Sleep -Seconds $sleep
-          } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
-          if ($i -eq $max) {
-            throw "NuGet not published after $max tries"
-          }
+   - name: Initialize GitHub NuGet Provider
+     shell: pwsh
+     run: |
+      dotnet nuget add source --username ${{ env.USERNAME }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/lk-code/index.json"
 
 
 
-      - name: Add NuGets FluentDataBuilder.Json
-        shell: pwsh
-        run: |
-          dotnet add source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj package FluentDataBuilder --version ${{ env.VERSION }}
+   - name: Build FluentDataBuilder
+     shell: pwsh
+     run: |
+      dotnet build -c Release source/FluentDataBuilder/FluentDataBuilder.csproj
 
-      - name: Build FluentDataBuilder.Json
-        shell: pwsh
-        run: |
-          dotnet build -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
+   - name: Pack FluentDataBuilder
+     shell: pwsh
+     run: |
+      dotnet pack -c Release source/FluentDataBuilder/FluentDataBuilder.csproj /p:PackageVersion=${{ env.VERSION }}
 
-      - name: Pack FluentDataBuilder.Json
-        shell: pwsh
-        run: |
-          dotnet pack -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj /p:PackageVersion=${{ env.VERSION }}
+   - name: Temporary NuGet FluentDataBuilder
+     shell: pwsh
+     run: |
+      dotnet nuget push source/FluentDataBuilder/nupkg/FluentDataBuilder.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Temporary NuGet FluentDataBuilder.Json
-        shell: pwsh
-        run: |
-          dotnet nuget push source/FluentDataBuilder.Json/nupkg/FluentDataBuilder.Json.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Wait for FluentDataBuilder.Json Published
-        shell: pwsh
-        run: |
-          $i = 0
-          $max = 10
-          $sleep = 5
-          $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.json/${{ env.VERSION }}.json"
-          $headers = @{
-            "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
-          }
-          do {
-            $i++
-            Write-Host "Waiting for NuGet to publish $url"
-            Start-Sleep -Seconds $sleep
-          } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
-          if ($i -eq $max) {
-            throw "NuGet not published after $max tries"
-          }
+   - name: Wait for FluentDataBuilder Published
+     shell: pwsh
+     run: |
+      $i = 0
+      $max = 10
+      $sleep = 5
+      $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder/${{ env.VERSION }}.json"
+      $headers = @{
+        "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
+      }
+      do {
+        $i++
+        Write-Host "Waiting for NuGet to publish $url"
+        Start-Sleep -Seconds $sleep
+      } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
+      if ($i -eq $max) {
+        throw "NuGet not published after $max tries"
+      }
 
 
 
-      - name: Add NuGets FluentDataBuilder.NewtonsoftJson
-        shell: pwsh
-        run: |
-          dotnet add source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj package FluentDataBuilder --version ${{ env.VERSION }}
+   - name: Add NuGets FluentDataBuilder.Json
+     shell: pwsh
+     run: |
+      dotnet add source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj package FluentDataBuilder --version ${{ env.VERSION }}
 
-      - name: Build FluentDataBuilder.NewtonsoftJson
-        shell: pwsh
-        run: |
-          dotnet build -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj
+   - name: Build FluentDataBuilder.Json
+     shell: pwsh
+     run: |
+      dotnet build -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj
 
-      - name: Pack FluentDataBuilder.NewtonsoftJson
-        shell: pwsh
-        run: |
-          dotnet pack -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj /p:PackageVersion=${{ env.VERSION }}
+   - name: Pack FluentDataBuilder.Json
+     shell: pwsh
+     run: |
+      dotnet pack -c Release source/FluentDataBuilder.Json/FluentDataBuilder.Json.csproj /p:PackageVersion=${{ env.VERSION }}
 
-      - name: Temporary NuGet FluentDataBuilder.NewtonsoftJson
-        shell: pwsh
-        run: |
-          dotnet nuget push source/FluentDataBuilder.NewtonsoftJson/nupkg/FluentDataBuilder.NewtonsoftJson.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+   - name: Temporary NuGet FluentDataBuilder.Json
+     shell: pwsh
+     run: |
+      dotnet nuget push source/FluentDataBuilder.Json/nupkg/FluentDataBuilder.Json.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Wait for FluentDataBuilder.NewtonsoftJson Published
-        shell: pwsh
-        run: |
-          $i = 0
-          $max = 10
-          $sleep = 5
-          $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.newtonsoftjson/${{ env.VERSION }}.json"
-          $headers = @{
-            "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
-          }
-          do {
-            $i++
-            Write-Host "Waiting for NuGet to publish $url"
-            Start-Sleep -Seconds $sleep
-          } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
-          if ($i -eq $max) {
-            throw "NuGet not published after $max tries"
-          }
-
-
-
-      - name: Add NuGets FluentDataBuilder.Xml
-        shell: pwsh
-        run: |
-          dotnet add source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj package FluentDataBuilder --version ${{ env.VERSION }}
-
-      - name: Build FluentDataBuilder.Xml
-        shell: pwsh
-        run: |
-          dotnet build -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj
-
-      - name: Pack FluentDataBuilder.Xml
-        shell: pwsh
-        run: |
-          dotnet pack -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj /p:PackageVersion=${{ env.VERSION }}
-
-      - name: Temporary NuGet FluentDataBuilder.Xml
-        shell: pwsh
-        run: |
-          dotnet nuget push source/FluentDataBuilder.Xml/nupkg/FluentDataBuilder.Xml.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Wait for FluentDataBuilder.Xml Published
-        shell: pwsh
-        run: |
-          $i = 0
-          $max = 10
-          $sleep = 5
-          $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.xml/${{ env.VERSION }}.json"
-          $headers = @{
-            "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
-          }
-          do {
-            $i++
-            Write-Host "Waiting for NuGet to publish $url"
-            Start-Sleep -Seconds $sleep
-          } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
-          if ($i -eq $max) {
-            throw "NuGet not published after $max tries"
-          }
+   - name: Wait for FluentDataBuilder.Json Published
+     shell: pwsh
+     run: |
+      $i = 0
+      $max = 10
+      $sleep = 5
+      $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.json/${{ env.VERSION }}.json"
+      $headers = @{
+        "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
+      }
+      do {
+        $i++
+        Write-Host "Waiting for NuGet to publish $url"
+        Start-Sleep -Seconds $sleep
+      } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
+      if ($i -eq $max) {
+        throw "NuGet not published after $max tries"
+      }
 
 
 
-      - name: Add NuGets FluentDataBuilder.Yaml
-        shell: pwsh
-        run: |
-          dotnet add source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj package FluentDataBuilder --version ${{ env.VERSION }}
+   - name: Add NuGets FluentDataBuilder.NewtonsoftJson
+     shell: pwsh
+     run: |
+      dotnet add source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj package FluentDataBuilder --version ${{ env.VERSION }}
 
-      - name: Build FluentDataBuilder.Yaml
-        shell: pwsh
-        run: |
-          dotnet build -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj
+   - name: Build FluentDataBuilder.NewtonsoftJson
+     shell: pwsh
+     run: |
+      dotnet build -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj
 
-      - name: Pack FluentDataBuilder.Yaml
-        shell: pwsh
-        run: |
-          dotnet pack -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj /p:PackageVersion=${{ env.VERSION }}
+   - name: Pack FluentDataBuilder.NewtonsoftJson
+     shell: pwsh
+     run: |
+      dotnet pack -c Release source/FluentDataBuilder.NewtonsoftJson/FluentDataBuilder.NewtonsoftJson.csproj /p:PackageVersion=${{ env.VERSION }}
 
-      - name: Temporary NuGet FluentDataBuilder.Yaml
-        shell: pwsh
-        run: |
-          dotnet nuget push source/FluentDataBuilder.Yaml/nupkg/FluentDataBuilder.Yaml.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+   - name: Temporary NuGet FluentDataBuilder.NewtonsoftJson
+     shell: pwsh
+     run: |
+      dotnet nuget push source/FluentDataBuilder.NewtonsoftJson/nupkg/FluentDataBuilder.NewtonsoftJson.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Wait for FluentDataBuilder.Yaml Published
-        shell: pwsh
-        run: |
-          $i = 0
-          $max = 10
-          $sleep = 5
-          $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.yaml/${{ env.VERSION }}.json"
-          $headers = @{
-            "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
-          }
-          do {
-            $i++
-            Write-Host "Waiting for NuGet to publish $url"
-            Start-Sleep -Seconds $sleep
-          } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
-          if ($i -eq $max) {
-            throw "NuGet not published after $max tries"
-          }
-
-
-
-      - name: Add NuGets FluentDataBuilder.Microsoft.Extensions.Configuration
-        shell: pwsh
-        run: |
-          dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder --version ${{ env.VERSION }}
-          dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder.Json --version ${{ env.VERSION }}
-
-      - name: Build FluentDataBuilder.Microsoft.Extensions.Configuration
-        shell: pwsh
-        run: |
-          dotnet build -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj
-
-      - name: Pack FluentDataBuilder.Microsoft.Extensions.Configuration
-        shell: pwsh
-        run: |
-          dotnet pack -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj /p:PackageVersion=${{ env.VERSION }}
-
-      - name: Temporary NuGet FluentDataBuilder.Microsoft.Extensions.Configuration
-        shell: pwsh
-        run: |
-          dotnet nuget push source/FluentDataBuilder.Microsoft.Extensions.Configuration/nupkg/FluentDataBuilder.Microsoft.Extensions.Configuration.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Wait for FluentDataBuilder.Microsoft.Extensions.Configuration Published
-        shell: pwsh
-        run: |
-          $i = 0
-          $max = 10
-          $sleep = 5
-          $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.microsoft.extensions.configuration/${{ env.VERSION }}.json"
-          $headers = @{
-            "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
-          }
-          do {
-            $i++
-            Write-Host "Waiting for NuGet to publish $url"
-            Start-Sleep -Seconds $sleep
-          } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
-          if ($i -eq $max) {
-            throw "NuGet not published after $max tries"
-          }
+   - name: Wait for FluentDataBuilder.NewtonsoftJson Published
+     shell: pwsh
+     run: |
+      $i = 0
+      $max = 10
+      $sleep = 5
+      $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.newtonsoftjson/${{ env.VERSION }}.json"
+      $headers = @{
+        "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
+      }
+      do {
+        $i++
+        Write-Host "Waiting for NuGet to publish $url"
+        Start-Sleep -Seconds $sleep
+      } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
+      if ($i -eq $max) {
+        throw "NuGet not published after $max tries"
+      }
 
 
 
-      - name: Finish Analyze
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        shell: pwsh
-        run: |
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+   - name: Add NuGets FluentDataBuilder.Xml
+     shell: pwsh
+     run: |
+      dotnet add source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj package FluentDataBuilder --version ${{ env.VERSION }}
 
-      - name: Set Version Git Tag
-        run: |
-          git tag ${{ env.VERSION }}
-          git push origin ${{ env.VERSION }}
+   - name: Build FluentDataBuilder.Xml
+     shell: pwsh
+     run: |
+      dotnet build -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj
 
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4.6.0
-        with:
-          name: ${{ env.VERSION }}
-          path: "**/*.${{ env.VERSION }}.nupkg"
+   - name: Pack FluentDataBuilder.Xml
+     shell: pwsh
+     run: |
+      dotnet pack -c Release source/FluentDataBuilder.Xml/FluentDataBuilder.Xml.csproj /p:PackageVersion=${{ env.VERSION }}
 
-      - name: Publish
-        run: dotnet nuget push "**/*.${{ env.VERSION }}.nupkg" --no-symbols --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} --source "nuget.org"
+   - name: Temporary NuGet FluentDataBuilder.Xml
+     shell: pwsh
+     run: |
+      dotnet nuget push source/FluentDataBuilder.Xml/nupkg/FluentDataBuilder.Xml.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+
+   - name: Wait for FluentDataBuilder.Xml Published
+     shell: pwsh
+     run: |
+      $i = 0
+      $max = 10
+      $sleep = 5
+      $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.xml/${{ env.VERSION }}.json"
+      $headers = @{
+        "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
+      }
+      do {
+        $i++
+        Write-Host "Waiting for NuGet to publish $url"
+        Start-Sleep -Seconds $sleep
+      } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
+      if ($i -eq $max) {
+        throw "NuGet not published after $max tries"
+      }
+
+
+
+   - name: Add NuGets FluentDataBuilder.Yaml
+     shell: pwsh
+     run: |
+      dotnet add source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj package FluentDataBuilder --version ${{ env.VERSION }}
+
+   - name: Build FluentDataBuilder.Yaml
+     shell: pwsh
+     run: |
+      dotnet build -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj
+
+   - name: Pack FluentDataBuilder.Yaml
+     shell: pwsh
+     run: |
+      dotnet pack -c Release source/FluentDataBuilder.Yaml/FluentDataBuilder.Yaml.csproj /p:PackageVersion=${{ env.VERSION }}
+
+   - name: Temporary NuGet FluentDataBuilder.Yaml
+     shell: pwsh
+     run: |
+      dotnet nuget push source/FluentDataBuilder.Yaml/nupkg/FluentDataBuilder.Yaml.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+
+   - name: Wait for FluentDataBuilder.Yaml Published
+     shell: pwsh
+     run: |
+      $i = 0
+      $max = 10
+      $sleep = 5
+      $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.yaml/${{ env.VERSION }}.json"
+      $headers = @{
+        "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
+      }
+      do {
+        $i++
+        Write-Host "Waiting for NuGet to publish $url"
+        Start-Sleep -Seconds $sleep
+      } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
+      if ($i -eq $max) {
+        throw "NuGet not published after $max tries"
+      }
+
+
+
+   - name: Add NuGets FluentDataBuilder.Microsoft.Extensions.Configuration
+     shell: pwsh
+     run: |
+      dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder --version ${{ env.VERSION }}
+      dotnet add source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj package FluentDataBuilder.Json --version ${{ env.VERSION }}
+
+   - name: Build FluentDataBuilder.Microsoft.Extensions.Configuration
+     shell: pwsh
+     run: |
+      dotnet build -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj
+
+   - name: Pack FluentDataBuilder.Microsoft.Extensions.Configuration
+     shell: pwsh
+     run: |
+      dotnet pack -c Release source/FluentDataBuilder.Microsoft.Extensions.Configuration/FluentDataBuilder.Microsoft.Extensions.Configuration.csproj /p:PackageVersion=${{ env.VERSION }}
+
+   - name: Temporary NuGet FluentDataBuilder.Microsoft.Extensions.Configuration
+     shell: pwsh
+     run: |
+      dotnet nuget push source/FluentDataBuilder.Microsoft.Extensions.Configuration/nupkg/FluentDataBuilder.Microsoft.Extensions.Configuration.${{ env.VERSION }}.nupkg --source https://nuget.pkg.github.com/lk-code/index.json --api-key ${{ secrets.GITHUB_TOKEN }}
+
+   - name: Wait for FluentDataBuilder.Microsoft.Extensions.Configuration Published
+     shell: pwsh
+     run: |
+      $i = 0
+      $max = 10
+      $sleep = 5
+      $url = "https://nuget.pkg.github.com/lk-code/fluentdatabuilder.microsoft.extensions.configuration/${{ env.VERSION }}.json"
+      $headers = @{
+        "Authorization" = "Bearer ${{ secrets.GITHUB_TOKEN }}"
+      }
+      do {
+        $i++
+        Write-Host "Waiting for NuGet to publish $url"
+        Start-Sleep -Seconds $sleep
+      } while ((Invoke-WebRequest -Uri $url -UseBasicParsing -Headers $headers).StatusCode -ne 200 -and $i -lt $max)
+      if ($i -eq $max) {
+        throw "NuGet not published after $max tries"
+      }
+
+
+
+   - name: End SonarQube
+     shell: pwsh
+     env:
+      SONARTOKEN: ${{ secrets.SONAR_TOKEN }}
+     run: |
+      dotnet-sonarscanner end /d:sonar.token="$env:SONARTOKEN"
+
+   - name: Set Version Git Tag
+     run: |
+      git tag ${{ env.VERSION }}
+      git push origin ${{ env.VERSION }}
+
+   - name: Upload Build Artifact
+     uses: actions/upload-artifact@v4.6.0
+     with:
+      name: ${{ env.VERSION }}
+      path: "**/*.${{ env.VERSION }}.nupkg"
+
+   - name: Publish
+     run: dotnet nuget push "**/*.${{ env.VERSION }}.nupkg" --no-symbols --skip-duplicate --api-key ${{ secrets.NUGET_API_KEY }} --source "nuget.org"
