@@ -17,7 +17,7 @@ updates:
     rebase-strategy: "auto"
     allow:
       - dependency-type: "all"
-    ignore:
+    # ignore:
       # Optional: bestimme Pakete, die nie automatisch geupdatet werden sollen
       # - dependency-name: "Microsoft.NET.Test.Sdk"
       # - dependency-name: "coverlet.collector"
