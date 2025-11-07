@@ -35,7 +35,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentDataBuilder" Version="8.0.114" />
+        <PackageReference Include="FluentDataBuilder" Version="8.0.130" />
         <PackageReference Include="YamlDotNet" Version="16.3.0" />
     </ItemGroup>
 
