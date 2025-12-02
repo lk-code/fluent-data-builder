@@ -24,7 +24,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentDataBuilder" Version="8.0.114" />
+      <PackageReference Include="FluentDataBuilder" Version="8.0.130" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     </ItemGroup>
 
